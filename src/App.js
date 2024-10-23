@@ -1,23 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
-
+import Footer from "./components/Footer";
+import Navigation from "./components/Navigation";
+import Category from "./pages/Category";
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div class="text-black bg-white dark:text-white dark:bg-slate-900">
+      <marquee class="p-1">Freeship với đơn hàng từ 500k 🚀</marquee>
+      <Navigation />
+      <Category/>
+      <Footer />
     </div>
   );
 }
