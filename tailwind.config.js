@@ -5,5 +5,15 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [require("@tailwindcss/aspect-ratio")],
+  plugins: [
+    require("@tailwindcss/aspect-ratio"),
+    function ({ addUtilities }) {
+      addUtilities({
+        ".hr-full": {
+          width: "200vw", 
+          transform: "translateX(-5%)", // Đảm bảo hr canh giữa trên màn hình
+        },
+      });
+    },
+  ],
 };
