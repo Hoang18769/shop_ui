@@ -1,5 +1,5 @@
 import React, { useContext, useCallback, useMemo } from "react";
-import { AppContext } from "../App";
+import { AppContext } from "./AppContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
