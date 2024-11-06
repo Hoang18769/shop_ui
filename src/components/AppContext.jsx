@@ -72,8 +72,46 @@ export default function AppContextProvider({ children }) {
       },
     ],
   });
+  const [category, setCategory] = useState({
+    top: [
+      {
+        name: "Tees",
+        path: "tees",
+      },
+      {
+        name: "Shirts",
+        path: "shirts",
+      },
+      {
+        name: "Jackets",
+        path: "jackets",
+      },
+      {
+        name: "Hoodies & Sweaters",
+        path: "hoodies-sweaters",
+      },
+    ],
+    bottom: [
+      {
+        name: "Long pants",
+        path: "long-pants",
+      },
+      {
+        name: "Short pants",
+        path: "short-pants",
+      },
+      {
+        name: "Skirts",
+        path: "skirts",
+      },
+    ],
+    accessory: [
+      { name: "Shoes", path: "shoes" },
+      { name: "Bags", path: "bags" },
+    ],
+  });
   return (
-    <AppContext.Provider value={{ cart, setCart }}>
+    <AppContext.Provider value={{ cart, setCart, category }}>
       {children}
     </AppContext.Provider>
   );
