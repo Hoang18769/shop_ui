@@ -4,6 +4,7 @@ import { AppContext } from "./AppContext";
 import debounce from "lodash.debounce";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { MAX_ITEM_QUANTITY } from "../constant";
 
 export default function Cart() {
   const { cart, setCart } = useContext(AppContext);
@@ -19,6 +20,7 @@ export default function Cart() {
   );
 
   const handleChangeQuantity = (productId, newQuantity) => {
+    if (newQuantity < 0 || newQuantity > MAX_ITEM_QUANTITY) return;
     setCart((prevCart) => {
       const updatedProducts = prevCart.products.map((item) =>
         item.product.id === productId
@@ -55,7 +57,7 @@ export default function Cart() {
               <div className="flex items-center justify-center gap-2 mr-2">
                 <button
                   onClick={() => handleRemoveItem(item.product.id)}
-                  className="w-8 h-8 hover:bg-gray-200 hover:rounded-full"
+                  className="w-8 h-8 aspect-1 hover:bg-gray-200 hover:rounded-full dark:hover:text-black"
                 >
                   <FontAwesomeIcon icon={faXmark} />
                 </button>
@@ -67,7 +69,7 @@ export default function Cart() {
               </div>
               <div className="flex items-center justify-center">
                 <Link
-                  to={`/product/${item?.product?.path}`}
+                  to={`/product/${item?.product?.path}/?color=${item?.color?.name}&size=${item?.size}&quantity=${item?.quantity}`}
                   className="font-semibold"
                 >
                   {item?.product?.name}
@@ -90,6 +92,7 @@ export default function Cart() {
                 <div className="quantity-editor h-10 flex">
                   <button
                     className="w-10 border-2"
+                    disabled={parseInt(item.quantity) <= 1}
                     onClick={() => {
                       if (item?.quantity - 1 <= 0) {
                         handleRemoveItem(item.product.id);
@@ -116,6 +119,7 @@ export default function Cart() {
                   />
                   <button
                     className="w-10 border-2"
+                    disabled={parseInt(item?.quantity) >= MAX_ITEM_QUANTITY}
                     onClick={() =>
                       handleChangeQuantity(
                         item?.product?.id,

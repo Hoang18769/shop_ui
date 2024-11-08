@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import debounce from "lodash.debounce";
+import { MAX_ITEM_QUANTITY } from "../constant";
 
 export default function SideCart() {
   const { cart, setCart } = useContext(AppContext);
@@ -14,6 +15,7 @@ export default function SideCart() {
   );
 
   const handleChangeQuantity = (productId, newQuantity) => {
+    if (newQuantity < 0 || newQuantity > MAX_ITEM_QUANTITY) return;
     setCart((prevCart) => {
       const updatedProducts = prevCart.products.map((item) =>
         item.product.id === productId
@@ -39,7 +41,10 @@ export default function SideCart() {
       <div className="flex justify-between items-center">
         <h2>CART</h2>
         <label className="mb-2 hover:scale-110" htmlFor="cart">
-          <FontAwesomeIcon className="text-2xl" icon={faXmark} />
+          <FontAwesomeIcon
+            className="text-2xl dark:hover:text-black"
+            icon={faXmark}
+          />
         </label>
       </div>
       <hr />
@@ -48,7 +53,7 @@ export default function SideCart() {
           <div key={item.product.id} className="flex gap-4 relative py-2">
             <button
               onClick={() => handleRemoveItem(item.product.id)}
-              className="absolute top-0 right-0 w-8 aspect-1 hover:bg-gray-200 hover:rounded-full"
+              className="absolute top-2 right-0 w-8 h-8 aspect-1 hover:bg-gray-200 hover:rounded-full dark:hover:text-black"
             >
               <FontAwesomeIcon icon={faXmark} />
             </button>
@@ -73,6 +78,7 @@ export default function SideCart() {
                   <div className="quantity-editor">
                     <button
                       className="w-10 border-2"
+                      disabled={parseInt(item?.quantity) <= 1}
                       onClick={() => {
                         if (item?.quantity - 1 <= 0) {
                           handleRemoveItem(item.product.id);
@@ -99,6 +105,7 @@ export default function SideCart() {
                     />
                     <button
                       className="w-10 border-2"
+                      disabled={parseInt(item?.quantity) >= MAX_ITEM_QUANTITY}
                       onClick={() =>
                         handleChangeQuantity(
                           item?.product?.id,
@@ -151,7 +158,7 @@ export default function SideCart() {
       <hr />
       <Link
         to="/account/?tab=cart"
-        className="w-full text-center py-2 bg-gray-300 text-white hover:opacity-50"
+        className="w-full text-center py-2 bg-gray-300 text-white hover:opacity-50 dark:text-gray-700"
       >
         VIEW CART
       </Link>

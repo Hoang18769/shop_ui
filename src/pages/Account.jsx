@@ -10,7 +10,7 @@ import Cart from "../components/Cart";
 import Order from "../components/Order";
 export default function Account() {
   const [query, setQuery] = useSearchParams();
-  const loggedIn = false;
+  const loggedIn = true;
   const tab = query.get("tab") || (loggedIn ? "profile" : "login");
   const changeTab = (newTab) => {
     setQuery({ tab: newTab });
