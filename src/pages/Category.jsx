@@ -426,6 +426,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
   useEffect(() => {
     debouncedFetchCategory(() => {
       fetchCategory(page);
+      changeSearchQuery("colors", colors.join(","));
       console.warn("colors changed");
     });
   }, [colors]);
@@ -470,7 +471,6 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
       : [...colors, color];
 
     setColors(updatedColors);
-    changeSearchQuery("colors", colors.join(","));
   };
 
   let categoryContent;
@@ -510,6 +510,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
       </div>
     );
   }
+
   return (
     <div>
       <nav className="mb-4">
@@ -666,7 +667,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
               </div>
             </div>
           </div>
-          <div className={`ml-5 grid sm:grid-cols-2 md:grid-cols-3`}>
+          <div className={`ml-5 grid gap-3 sm:grid-cols-2 md:grid-cols-3`}>
             {products.map((product, index) => (
               <Product key={index} product={product} />
             ))}
@@ -906,7 +907,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
               </div>
             </div>
             <div
-              className={`ml-5 grid ${
+              className={`ml-5 grid gap-5 ${
                 selectedCol === 2
                   ? "grid-cols-2"
                   : selectedCol === 3
