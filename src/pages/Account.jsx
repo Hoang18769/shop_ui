@@ -7,7 +7,7 @@ import NotFound from "./NotFound";
 import Profile from "../components/Profile";
 import Logout from "../components/Logout";
 import Cart from "../components/Cart";
-import Order from "../components/Order";
+import Order from "./Order";
 export default function Account() {
   const [query, setQuery] = useSearchParams();
   const loggedIn = true;

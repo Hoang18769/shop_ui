@@ -452,7 +452,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
       if (subtype) {
         document.title = category[type]
           .find((item) => item.path === subtype)
-          .name.toUpperCase();
+          ?.name.toUpperCase();
       } else {
         document.title = type.toUpperCase();
       }
@@ -499,11 +499,11 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
         <div className="flex flex-col lg:flex-row gap-5">
           {category[type].map((item) => (
             <Link
-              key={item.path}
-              to={`/product-category/${type}/${item.path}`}
+              key={item?.path}
+              to={`/product-category/${type}/${item?.path}`}
               className="text-left text-lg relative after:content-[''] dark:after:bg-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-black after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
             >
-              {item.name}
+              {item?.name}
             </Link>
           ))}
         </div>

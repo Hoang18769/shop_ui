@@ -102,11 +102,11 @@ For example, time or more detailed delivery location instructions."
                       return (
                         total +
                         product.quantity * parseFloat(product.product.price)
-                      ).toLocaleString("vi-VN", {
+                      )
+                    }, 0).toLocaleString("vi-VN", {
                         style: "currency",
                         currency: "VND",
-                      });
-                    }, 0)}
+                      })}
                   </p>
                 </div>
                 <em className="self-end text-sm">
@@ -129,7 +129,7 @@ For example, time or more detailed delivery location instructions."
             className="ml-2 w-6 h-6"
             value="cod"
           />
-          <p>COD - Cash</p>
+          <p>COD - Cash on delivery</p>
           <FontAwesomeIcon icon={faMoneyBill} />
         </div>
         <div className="flex gap-5 items-center">
