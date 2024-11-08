@@ -863,14 +863,17 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
             View all
           </Link>
         </div>
-        <div className="new-products-container grid grid-cols-4 gap-4">
+        <div className="new-products-container grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {newProducts?.map((p) => (
             <Product product={p} />
           ))}
         </div>
-        <button className="py-2 px-10 border-4 border-gray-100 self-center hover:bg-gray-100 dark:hover:text-black font-semibold">
-          Xem thêm
-        </button>
+        <Link
+          to="/product"
+          className="py-2 px-10 border-4 border-gray-100 self-center hover:bg-gray-100 dark:hover:text-black font-semibold"
+        >
+          View more
+        </Link>
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex justify-between">
@@ -879,14 +882,17 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
             View all
           </Link>
         </div>
-        <div className="new-products-container grid grid-cols-4 gap-4">
+        <div className="new-products-container grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {bestSellers?.map((p) => (
             <Product product={p} />
           ))}
         </div>
-        <button className="py-2 px-10 border-4 border-gray-100 self-center hover:bg-gray-100 dark:hover:text-black font-semibold">
-          Xem thêm
-        </button>
+        <Link
+          to="/product"
+          className="py-2 px-10 border-4 border-gray-100 self-center hover:bg-gray-100 dark:hover:text-black font-semibold"
+        >
+          View more
+        </Link>
       </div>
       <hr className="hr-full" />
       <div className="flex gap-5">
