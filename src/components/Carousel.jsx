@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const Carousel = ({ images }) => {
+const Carousel = ({ images, time = 3000}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -8,7 +8,7 @@ const Carousel = ({ images }) => {
       setCurrentIndex((prevIndex) =>
         prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
-    }, 3000); // Thay đổi ảnh sau mỗi 3 giây
+    }, time); 
 
     return () => clearInterval(interval);
   }, [images.length]);
