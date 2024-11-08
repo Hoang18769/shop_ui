@@ -2,11 +2,11 @@ import {
   faAngleLeft,
   faAngleRight,
   faCheck,
-
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
+import { MAX_ITEM_QUANTITY } from "../constant";
 
 export default function Product() {
   const { path } = useParams();
@@ -25,6 +25,11 @@ export default function Product() {
   const changeQuery = (key, value) => {
     query.set(key, value);
     setQuery(query);
+  };
+
+  const updateQuantity = (newQuantity) => {
+    if (newQuantity < 0 || newQuantity > MAX_ITEM_QUANTITY) return;
+    changeQuery("quantity", newQuantity);
   };
 
   useEffect(() => {
@@ -213,9 +218,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
             <button
               className="w-10 border-2"
               disabled={parseInt(selectedQuantity) <= 1}
-              onClick={() => {
-                changeQuery("quantity", parseInt(selectedQuantity) - 1);
-              }}
+              onClick={() => updateQuantity(parseInt(selectedQuantity) - 1)}
             >
               -
             </button>
@@ -223,21 +226,18 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
               type="text"
               className="w-14 border-y-2 text-center bg-white text-black dark:bg-gray-900 dark:text-white"
               value={selectedQuantity}
-              onChange={(e) =>
-                changeQuery("quantity", parseInt(e.target.value) || 1)
-              }
+              onChange={(e) => updateQuantity(parseInt(e.target.value) || 1)}
             />
             <button
               className="w-10 border-2"
-              onClick={() =>
-                changeQuery("quantity", parseInt(selectedQuantity) + 1)
-              }
+              onClick={() => updateQuantity(parseInt(selectedQuantity) + 1)}
             >
               +
             </button>
           </div>
           <button
             onClick={handleAddToCart}
+            disabled={parseInt(selectedQuantity) >= MAX_ITEM_QUANTITY}
             className="w-full bg-black h-14 text-white py-2 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-300 uppercase"
           >
             Add to cart
