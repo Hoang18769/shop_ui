@@ -65,7 +65,7 @@ export default function Navigation() {
               id="top-dropdown"
             />
             <div className=" w-full text-left py-4 flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800">
-              <Link to="/product/top" className="flex-1">
+              <Link to="/product-category/top" className="flex-1">
                 Top
               </Link>
               <label
@@ -80,25 +80,25 @@ export default function Navigation() {
             </div>
             <div className="hidden peer-checked/top-dropdown:flex flex-col">
               <Link
-                to="/product/top/tees"
+                to="/product-category/top/tees"
                 className="w-full text-left py-2 pl-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
               >
                 Tees
               </Link>
               <Link
-                to="/product/top/shirts"
+                to="/product-category/top/shirts"
                 className="w-full text-left py-2 pl-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
               >
                 Shirts
               </Link>
               <Link
-                to="/product/top/jackets"
+                to="/product-category/top/jackets"
                 className="w-full text-left py-2 pl-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
               >
                 Jackets
               </Link>
               <Link
-                to="/product/top/hoodies-sweaters"
+                to="/product-category/top/hoodies-sweaters"
                 className="w-full text-left py-2 pl-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
               >
                 Hoodies & Sweaters
@@ -113,7 +113,7 @@ export default function Navigation() {
               id="bottom-dropdown"
             />
             <div className=" w-full text-left py-4 flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800">
-              <Link to="/product/top" className="flex-1">
+              <Link to="/product-category/top" className="flex-1">
                 Bottom
               </Link>
               <label
@@ -128,19 +128,19 @@ export default function Navigation() {
             </div>
             <div className="hidden peer-checked/bottom-dropdown:flex flex-col">
               <Link
-                to="/product/top/long-pants"
+                to="/product-category/top/long-pants"
                 className="w-full text-left py-2 pl-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
               >
                 Long pants
               </Link>
               <Link
-                to="/product/top/short-pants"
+                to="/product-category/top/short-pants"
                 className="w-full text-left py-2 pl-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
               >
                 Short pants
               </Link>
               <Link
-                to="/product/top/skirts"
+                to="/product-category/top/skirts"
                 className="w-full text-left py-2 pl-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
               >
                 Skirts
@@ -154,7 +154,7 @@ export default function Navigation() {
               id="accessory-dropdown"
             />
             <div className=" w-full text-left py-4 flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800">
-              <Link to="/product/accessory" className="flex-1">
+              <Link to="/product-category/accessory" className="flex-1">
                 Accessory
               </Link>
               <label
@@ -169,13 +169,13 @@ export default function Navigation() {
             </div>
             <div className="hidden peer-checked/accessory-dropdown:flex flex-col">
               <Link
-                to="/product/accessory/socks"
+                to="/product-category/accessory/socks"
                 className="w-full text-left py-2 pl-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
               >
                 Socks
               </Link>
               <Link
-                to="/product/accessory/bags"
+                to="/product-category/accessory/bags"
                 className="w-full text-left py-2 pl-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
               >
                 Bags
@@ -192,7 +192,7 @@ export default function Navigation() {
       </div>
       <div className="hidden font-medium h-16 mx-5 items-center justify-between uppercase lg:flex">
         <Link
-          to="/product"
+          to="/product-category"
           className="relative after:content-[''] dark:after:bg-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-black after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
         >
           Product
@@ -200,7 +200,7 @@ export default function Navigation() {
 
         <div className="relative group">
           <Link
-            to="/product/top/tees"
+            to="/product-category/top/tees"
             className="peer top-dropdown relative flex items-center after:content-[''] dark:after:bg-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-black after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
           >
             <p className="pr-2">top</p>
@@ -211,25 +211,25 @@ export default function Navigation() {
           </Link>
           <div className="hidden group-hover:block absolute left-0 dark:bg-gray-800 top-full w-48 bg-white shadow-md p-4 border-l-2 border-black dark:border-white">
             <Link
-              to="/product/top/tees"
+              to="/product-category/top/tees"
               className="block px-4 py-2 text-gray-500 hover:border-b-2 hover:border-b-black dark:hover:border-b-white text-sm"
             >
               Tees
             </Link>
             <Link
-              to="/product/top/shirts"
+              to="/product-category/top/shirts"
               className="block px-4 py-2 text-gray-500 hover:border-b-2 hover:border-b-black dark:hover:border-b-white text-sm"
             >
               Shirts
             </Link>
             <Link
-              to="/product/top/jackets"
+              to="/product-category/top/jackets"
               className="block px-4 py-2 text-gray-500 hover:border-b-2 hover:border-b-black dark:hover:border-b-white text-sm"
             >
               Jackets
             </Link>
             <Link
-              to="/product/top/hoodies-sweaters"
+              to="/product-category/top/hoodies-sweaters"
               className="block px-4 py-2 text-gray-500 hover:border-b-2 hover:border-b-black dark:hover:border-b-white text-sm"
             >
               Hoodies & Sweaters
@@ -239,7 +239,7 @@ export default function Navigation() {
 
         <div className="relative group">
           <Link
-            to="/product/bottom"
+            to="/product-category/bottom"
             className="peer bottom-dropdown relative flex items-center after:content-[''] dark:after:bg-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-black after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
           >
             <p className="pr-2">bottom</p>
@@ -250,19 +250,19 @@ export default function Navigation() {
           </Link>
           <div className="hidden group-hover:block absolute left-0 dark:bg-gray-800 top-full w-48 bg-white shadow-md p-4 border-l-2 border-black dark:border-white">
             <Link
-              to="/product/bottom/long-pants"
+              to="/product-category/bottom/long-pants"
               className="block px-4 py-2 text-gray-500 hover:border-b-2 hover:border-b-black dark:hover:border-b-white text-sm"
             >
               Long pants
             </Link>
             <Link
-              to="/product/bottom/short-pants"
+              to="/product-category/bottom/short-pants"
               className="block px-4 py-2 text-gray-500 hover:border-b-2 hover:border-b-black dark:hover:border-b-white text-sm"
             >
               Short pants
             </Link>
             <Link
-              to="/product/bottom/skirts"
+              to="/product-category/bottom/skirts"
               className="block px-4 py-2 text-gray-500 hover:border-b-2 hover:border-b-black dark:hover:border-b-white text-sm"
             >
               Skirts
@@ -271,7 +271,7 @@ export default function Navigation() {
         </div>
         <div className="relative group">
           <Link
-            to="/product/accessory"
+            to="/product-category/accessory"
             className="peer accessory-dropdown relative flex items-center after:content-[''] dark:after:bg-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-black after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
           >
             <p className="pr-2">Accessory</p>
@@ -282,13 +282,13 @@ export default function Navigation() {
           </Link>
           <div className="hidden group-hover:block absolute left-0 dark:bg-gray-800 top-full w-48 bg-white shadow-md p-4 border-l-2 border-black dark:border-white">
             <Link
-              to="/product/accessory/socks"
+              to="/product-category/accessory/socks"
               className="block px-4 py-2 text-gray-500 hover:border-b-2 hover:border-b-black dark:hover:border-b-white text-sm"
             >
               Socks
             </Link>
             <Link
-              to="/product/accessory/bags"
+              to="/product-category/accessory/bags"
               className="block px-4 py-2 text-gray-500 hover:border-b-2 hover:border-b-black dark:hover:border-b-white text-sm"
             >
               Bags

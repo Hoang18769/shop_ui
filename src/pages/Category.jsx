@@ -5,425 +5,514 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Pagination from "../components/Pagination";
 import Product from "../components/Product";
-import { useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
+import debounce from "lodash/debounce";
+import { AppContext } from "../components/AppContext";
+
+const debouncedFetchCategory = debounce((callback) => {
+  callback();
+}, 1000);
 
 export default function Category() {
   const { type, subtype } = useParams();
-  const subTypes = ["LONG PANTS", "SHORTS PANTS"];
-  const products = [
-    {
-      id: 1,
-      name: "Relaxed Fit Kaki Pants",
-      path: "rlkpants",
-      price: 250000,
-      quantity: 10,
-      description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-      colors: [
-        {
-          code: "#FFFFFF",
-          name: "black",
-        },
-        {
-          code: "#FF0000",
-          name: "red",
-        },
-      ],
-      type: {
-        id: 1,
-        name: "long pants",
-        type: "bottom",
-      },
-      imgs: [
-        "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-      ],
-    },
-    {
-      id: 2,
-      name: "Relaxed Fit Kaki Pants",
-      path: "rlkpants",
-      price: 250000,
-      quantity: 10,
-      description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-      colors: [
-        {
-          code: "#FFFFFF",
-          name: "black",
-        },
-        {
-          code: "#FF0000",
-          name: "red",
-        },
-      ],
-      type: {
-        id: 1,
-        name: "long pants",
-        type: "bottom",
-      },
-      imgs: [
-        "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-      ],
-    },
-    {
-      id: 3,
-      name: "Relaxed Fit Kaki Pants",
-      path: "rlkpants",
-      price: 250000,
-      quantity: 10,
-      description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-      colors: [
-        {
-          code: "#FFFFFF",
-          name: "black",
-        },
-        {
-          code: "#FF0000",
-          name: "red",
-        },
-      ],
-      type: {
-        id: 1,
-        name: "long pants",
-        type: "bottom",
-      },
-      imgs: [
-        "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-      ],
-    },
-    {
-      id: 4,
-      name: "Relaxed Fit Kaki Pants",
-      path: "rlkpants",
-      price: 250000,
-      quantity: 10,
-      description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-      colors: [
-        {
-          code: "#FFFFFF",
-          name: "black",
-        },
-        {
-          code: "#FF0000",
-          name: "red",
-        },
-      ],
-      type: {
-        id: 1,
-        name: "long pants",
-        type: "bottom",
-      },
-      imgs: [
-        "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-      ],
-    },
-    {
-      id: 5,
-      name: "Relaxed Fit Kaki Pants",
-      path: "rlkpants",
-      price: 250000,
-      quantity: 10,
-      description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-      colors: [
-        {
-          code: "#FFFFFF",
-          name: "black",
-        },
-        {
-          code: "#FF0000",
-          name: "red",
-        },
-      ],
-      type: {
-        id: 1,
-        name: "long pants",
-        type: "bottom",
-      },
-      imgs: [
-        "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-      ],
-    },
-    {
-      id: 6,
-      name: "Relaxed Fit Kaki Pants",
-      path: "rlkpants",
-      price: 250000,
-      quantity: 10,
-      description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-      colors: [
-        {
-          code: "#FFFFFF",
-          name: "black",
-        },
-        {
-          code: "#FF0000",
-          name: "red",
-        },
-      ],
-      type: {
-        id: 1,
-        name: "long pants",
-        type: "bottom",
-      },
-      imgs: [
-        "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-      ],
-    },
-    {
-      id: 7,
-      name: "Relaxed Fit Kaki Pants",
-      path: "rlkpants",
-      price: 250000,
-      quantity: 10,
-      description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-      colors: [
-        {
-          code: "#FFFFFF",
-          name: "black",
-        },
-        {
-          code: "#FF0000",
-          name: "red",
-        },
-      ],
-      type: {
-        id: 1,
-        name: "long pants",
-        type: "bottom",
-      },
-      imgs: [
-        "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-      ],
-    },
-    {
-      id: 8,
-      name: "Relaxed Fit Kaki Pants",
-      path: "rlkpants",
-      price: 250000,
-      quantity: 10,
-      description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-      colors: [
-        {
-          code: "#FFFFFF",
-          name: "black",
-        },
-        {
-          code: "#FF0000",
-          name: "red",
-        },
-      ],
-      type: {
-        id: 1,
-        name: "long pants",
-        type: "bottom",
-      },
-      imgs: [
-        "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-      ],
-    },
-    {
-      id: 9,
-      name: "Relaxed Fit Kaki Pants",
-      path: "rlkpants",
-      price: 250000,
-      quantity: 10,
-      description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-      colors: [
-        {
-          code: "#FFFFFF",
-          name: "black",
-        },
-        {
-          code: "#FF0000",
-          name: "red",
-        },
-      ],
-      type: {
-        id: 1,
-        name: "long pants",
-        type: "bottom",
-      },
-      imgs: [
-        "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-      ],
-    },
-  ];
-  const filterColors = [
-    {
-      color: "Cream",
-      quantity: 10,
-    },
-    {
-      color: "Black",
-      quantity: 9,
-    },
-    {
-      color: "Lead Gray",
-      quantity: 12,
-    },
-  ];
+  const [query, setQuery] = useSearchParams();
+  const [page, setPage] = useState(parseInt(query.get("page")) || 1);
+  const [from, setFrom] = useState(parseInt(query.get("from")) || 50000);
+  const [to, setTo] = useState(parseInt(query.get("to")) || 1000000);
+  const [colors, setColors] = useState(
+    query.get("colors") ? query.get("colors").split(",") : []
+  );
+  const changeSearchQuery = (key, value) => {
+    query.set(key, value);
+    setQuery(query);
+  };
+  const { category } = useContext(AppContext);
+  const [products, setProducts] = useState([]);
+  const [filterColors, setFilterColors] = useState([]);
   const [selectedSize, setSelectedSize] = useState(12);
   const [selectedCol, setSelectedCol] = useState(2);
   const [selectedOption, setSelectedOption] = useState("1");
 
-  const handleSizeChange = (e) => {
-    setSelectedSize(e.target.value * 1);
+  const fetchCategory = (page) => {
+    setProducts([
+      {
+        id: 1,
+        name: "Relaxed Fit Kaki Pants",
+        path: "rlkpants",
+        price: 250000,
+        quantity: 10,
+        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
+Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
+
+• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
+
+• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
+
+• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
+
+• Size: S / M / L / XL
+
+Xem từng ảnh để thấy những chi tiết thú vị nhé!
+
+ 
+
+Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
+        colors: [
+          {
+            code: "#FFFFFF",
+            name: "black",
+          },
+          {
+            code: "#FF0000",
+            name: "red",
+          },
+        ],
+        type: {
+          id: 1,
+          name: "long pants",
+          type: "bottom",
+        },
+        imgs: [
+          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
+          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
+        ],
+      },
+      {
+        id: 2,
+        name: "Relaxed Fit Kaki Pants",
+        path: "rlkpants",
+        price: 250000,
+        quantity: 10,
+        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
+Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
+
+• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
+
+• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
+
+• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
+
+• Size: S / M / L / XL
+
+Xem từng ảnh để thấy những chi tiết thú vị nhé!
+
+ 
+
+Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
+        colors: [
+          {
+            code: "#FFFFFF",
+            name: "black",
+          },
+          {
+            code: "#FF0000",
+            name: "red",
+          },
+        ],
+        type: {
+          id: 1,
+          name: "long pants",
+          type: "bottom",
+        },
+        imgs: [
+          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
+          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
+        ],
+      },
+      {
+        id: 3,
+        name: "Relaxed Fit Kaki Pants",
+        path: "rlkpants",
+        price: 250000,
+        quantity: 10,
+        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
+Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
+
+• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
+
+• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
+
+• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
+
+• Size: S / M / L / XL
+
+Xem từng ảnh để thấy những chi tiết thú vị nhé!
+
+ 
+
+Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
+        colors: [
+          {
+            code: "#FFFFFF",
+            name: "black",
+          },
+          {
+            code: "#FF0000",
+            name: "red",
+          },
+        ],
+        type: {
+          id: 1,
+          name: "long pants",
+          type: "bottom",
+        },
+        imgs: [
+          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
+          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
+        ],
+      },
+      {
+        id: 4,
+        name: "Relaxed Fit Kaki Pants",
+        path: "rlkpants",
+        price: 250000,
+        quantity: 10,
+        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
+Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
+
+• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
+
+• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
+
+• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
+
+• Size: S / M / L / XL
+
+Xem từng ảnh để thấy những chi tiết thú vị nhé!
+
+ 
+
+Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
+        colors: [
+          {
+            code: "#FFFFFF",
+            name: "black",
+          },
+          {
+            code: "#FF0000",
+            name: "red",
+          },
+        ],
+        type: {
+          id: 1,
+          name: "long pants",
+          type: "bottom",
+        },
+        imgs: [
+          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
+          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
+        ],
+      },
+      {
+        id: 5,
+        name: "Relaxed Fit Kaki Pants",
+        path: "rlkpants",
+        price: 250000,
+        quantity: 10,
+        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
+Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
+
+• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
+
+• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
+
+• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
+
+• Size: S / M / L / XL
+
+Xem từng ảnh để thấy những chi tiết thú vị nhé!
+
+ 
+
+Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
+        colors: [
+          {
+            code: "#FFFFFF",
+            name: "black",
+          },
+          {
+            code: "#FF0000",
+            name: "red",
+          },
+        ],
+        type: {
+          id: 1,
+          name: "long pants",
+          type: "bottom",
+        },
+        imgs: [
+          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
+          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
+        ],
+      },
+      {
+        id: 6,
+        name: "Relaxed Fit Kaki Pants",
+        path: "rlkpants",
+        price: 250000,
+        quantity: 10,
+        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
+Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
+
+• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
+
+• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
+
+• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
+
+• Size: S / M / L / XL
+
+Xem từng ảnh để thấy những chi tiết thú vị nhé!
+
+ 
+
+Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
+        colors: [
+          {
+            code: "#FFFFFF",
+            name: "black",
+          },
+          {
+            code: "#FF0000",
+            name: "red",
+          },
+        ],
+        type: {
+          id: 1,
+          name: "long pants",
+          type: "bottom",
+        },
+        imgs: [
+          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
+          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
+        ],
+      },
+      {
+        id: 7,
+        name: "Relaxed Fit Kaki Pants",
+        path: "rlkpants",
+        price: 250000,
+        quantity: 10,
+        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
+Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
+
+• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
+
+• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
+
+• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
+
+• Size: S / M / L / XL
+
+Xem từng ảnh để thấy những chi tiết thú vị nhé!
+
+ 
+
+Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
+        colors: [
+          {
+            code: "#FFFFFF",
+            name: "black",
+          },
+          {
+            code: "#FF0000",
+            name: "red",
+          },
+        ],
+        type: {
+          id: 1,
+          name: "long pants",
+          type: "bottom",
+        },
+        imgs: [
+          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
+          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
+        ],
+      },
+      {
+        id: 8,
+        name: "Relaxed Fit Kaki Pants",
+        path: "rlkpants",
+        price: 250000,
+        quantity: 10,
+        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
+Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
+
+• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
+
+• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
+
+• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
+
+• Size: S / M / L / XL
+
+Xem từng ảnh để thấy những chi tiết thú vị nhé!
+
+ 
+
+Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
+        colors: [
+          {
+            code: "#FFFFFF",
+            name: "black",
+          },
+          {
+            code: "#FF0000",
+            name: "red",
+          },
+        ],
+        type: {
+          id: 1,
+          name: "long pants",
+          type: "bottom",
+        },
+        imgs: [
+          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
+          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
+        ],
+      },
+      {
+        id: 9,
+        name: "Relaxed Fit Kaki Pants",
+        path: "rlkpants",
+        price: 250000,
+        quantity: 10,
+        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
+Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
+
+• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
+
+• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
+
+• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
+
+• Size: S / M / L / XL
+
+Xem từng ảnh để thấy những chi tiết thú vị nhé!
+
+ 
+
+Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
+        colors: [
+          {
+            code: "#FFFFFF",
+            name: "black",
+          },
+          {
+            code: "#FF0000",
+            name: "red",
+          },
+        ],
+        type: {
+          id: 1,
+          name: "long pants",
+          type: "bottom",
+        },
+        imgs: [
+          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
+          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
+        ],
+      },
+    ]);
+    console.count("call API");
   };
-  const handleColChange = (e) => {
-    setSelectedCol(e.target.value * 1);
+  useEffect(() => {
+    fetchCategory(page);
+  }, [page]);
+
+  useEffect(() => {
+    debouncedFetchCategory(() => {
+      fetchCategory(page);
+      changeSearchQuery("colors", colors.join(","));
+      console.warn("colors changed");
+    });
+  }, [colors]);
+  const fetchFilterColors = () => {
+    setFilterColors([
+      {
+        color: "Cream",
+        quantity: 10,
+      },
+      {
+        color: "Black",
+        quantity: 9,
+      },
+      {
+        color: "Lead Gray",
+        quantity: 12,
+      },
+    ]);
   };
-  const handleSelectChange = (e) => {
-    setSelectedOption(e.target.value);
+  useEffect(() => {
+    fetchFilterColors();
+    if (type) {
+      if (subtype) {
+        document.title = category[type]
+          .find((item) => item.path === subtype)
+          .name.toUpperCase();
+      } else {
+        document.title = type.toUpperCase();
+      }
+    } else {
+      document.title = "Category".toUpperCase();
+    }
+  }, [type, subtype]);
+  useEffect(() => {
+    return () => {
+      debouncedFetchCategory.cancel();
+    };
+  }, []);
+  const handleCheckboxChange = (color) => {
+    const updatedColors = colors.includes(color)
+      ? colors.filter((c) => c !== color)
+      : [...colors, color];
+
+    setColors(updatedColors);
   };
+
+  let categoryContent;
+  if (!type) {
+    // Hiển thị danh sách các type nếu không có `type`
+    categoryContent = (
+      <div className="flex flex-col gap-3 uppercase">
+        <div className="text-xl font-bold">PRODUCT</div>
+        <div className="flex flex-col lg:flex-row gap-5">
+          {Object.keys(category).map((key) => (
+            <Link
+              key={key}
+              to={`/product-category/${key}`}
+              className="text-left text-lg relative after:content-[''] dark:after:bg-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-black after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
+            >
+              {key}
+            </Link>
+          ))}
+        </div>
+      </div>
+    );
+  } else if (type && category[type]) {
+    categoryContent = (
+      <div className="flex flex-col gap-3 uppercase">
+        <div className="text-xl font-bold">{type}</div>
+        <div className="flex flex-col lg:flex-row gap-5">
+          {category[type].map((item) => (
+            <Link
+              key={item.path}
+              to={`/product-category/${type}/${item.path}`}
+              className="text-left text-lg relative after:content-[''] dark:after:bg-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-black after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
+            >
+              {item.name}
+            </Link>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
-      <div className="text-3xl uppercase font-bold">{subtype}</div>
       <nav className="mb-4">
         {/* Mobile menu */}
         <div className="lg:hidden flex flex-col relative">
@@ -440,28 +529,14 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
             <FontAwesomeIcon className="text-md ml-3" icon={faAngleDown} />
           </label>
           {/* Dropdown menu */}
-          <div className="hidden peer-checked/category-menu:flex flex-col gap-3 items-start pl-5 mt-3">
-            {subTypes.map((st) => (
-              <button
-                key={st}
-                className="text-left w-1/5 relative after:content-[''] dark:after:bg-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-black after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
-              >
-                {st}
-              </button>
-            ))}
+          <div className="hidden flex-col gap-3 items-start pl-5 mt-3 peer-checked/category-menu:flex">
+            {categoryContent}
           </div>
         </div>
 
         {/* Desktop menu */}
         <div className="hidden font-medium h-16 items-center uppercase lg:flex gap-10">
-          {subTypes.map((st) => (
-            <button
-              key={st}
-              className="relative after:content-[''] dark:after:bg-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-black after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
-            >
-              {st}
-            </button>
-          ))}
+          {categoryContent}
         </div>
       </nav>
 
@@ -480,8 +555,10 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
             </label>
             <div className="relative">
               <select
-                value={selectedOption} // Liên kết state với select
-                onChange={handleSelectChange} // Gọi hàm khi thay đổi
+                value={selectedOption}
+                onChange={(e) => {
+                  setSelectedOption(e.target.value);
+                }}
                 className="bg-transparent placeholder:text-gray-400 text-sm border border-gray-200 rounded pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-gray-400 hover:border-gray-400 shadow-sm focus:shadow-md appearance-none cursor-pointer text-black bg-white dark:text-white dark:bg-gray-600"
               >
                 <option className="dark:text-white dark:bg-gray-600" value="1">
@@ -520,19 +597,37 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                 <FontAwesomeIcon className="text-2xl" icon={faXmark} />
               </label>
               <div>
-                <p className="text-xl">LỌC THEO GIÁ</p>
+                <p className="text-xl">FILTER BY PRICE</p>
                 <div>
-                  <div className="w-12 mr-1">Từ</div>
-                  <input className="w-full shadow appearance-none border rounded py-2 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white pl-5" />
-                  <div className="w-12 mr-1">Đến</div>
-                  <input className="w-full shadow appearance-none border rounded py-2 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white pl-5" />
+                  <div className="w-12 mr-1">From</div>
+                  <input
+                    className="w-full shadow appearance-none border rounded py-2 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white pl-5"
+                    value={from}
+                    onChange={(e) => {
+                      setFrom(e.target.value);
+                      changeSearchQuery("from", e.target.value);
+                    }}
+                  />
+                  <div className="w-12 mr-1">To</div>
+                  <input
+                    className="w-full shadow appearance-none border rounded py-2 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white pl-5"
+                    value={to}
+                    onChange={(e) => {
+                      setTo(e.target.value);
+                      changeSearchQuery("to", e.target.value);
+                    }}
+                  />
                 </div>
 
-                <button className="w-full mt-3 p-2 bg-gray-300 px-5 dark:bg-gray-500 hover:bg-gray-700 hover:text-gray-100">
-                  Lọc
+                <button
+                  className="w-full mt-3 p-2 bg-gray-300 px-5 dark:bg-gray-500 hover:bg-gray-700 hover:text-gray-100"
+                  onClick={() => fetchCategory(page)}
+                >
+                  FILTER
                 </button>
+
                 <hr className="bg-gray-100 h-[1px] my-4" />
-                <p className="text-xl">LỌC THEO</p>
+                <p className="text-xl">Filter by colors</p>
                 <div className="flex flex-col gap-4 my-4">
                   {filterColors?.map((item, index) => (
                     <div
@@ -548,6 +643,8 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                             type="checkbox"
                             className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
                             id={`check-${item?.color}`}
+                            checked={colors.includes(item?.color)}
+                            onChange={() => handleCheckboxChange(item?.color)}
                           />
                           <span className="absolute text-white dark:text-gray-900 opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                             <FontAwesomeIcon
@@ -570,28 +667,52 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
               </div>
             </div>
           </div>
-          <div className={`ml-5 grid sm:grid-cols-2 md:grid-cols-3`}>
+          <div className={`ml-5 grid gap-3 sm:grid-cols-2 md:grid-cols-3`}>
             {products.map((product, index) => (
               <Product key={index} product={product} />
             ))}
           </div>
-          <Pagination current={2} total={100} onChange={(num) => alert(num)} />
+          <Pagination
+            current={page}
+            total={100}
+            onChange={(num) => {
+              setPage(num);
+              changeSearchQuery("page", num);
+            }}
+          />
         </div>
         <div className="hidden lg:flex my-4">
           <div className="w-1/4">
             <p className="text-xl">FILTER BY PRICE</p>
             <div>
               <div className="w-12 mr-1">From</div>
-              <input className="w-full shadow appearance-none border rounded py-2 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white pl-5" />
+              <input
+                className="w-full shadow appearance-none border rounded py-2 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white pl-5"
+                value={from}
+                onChange={(e) => {
+                  setFrom(e.target.value);
+                  changeSearchQuery("from", e.target.value);
+                }}
+              />
               <div className="w-12 mr-1">To</div>
-              <input className="w-full shadow appearance-none border rounded py-2 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white pl-5" />
+              <input
+                className="w-full shadow appearance-none border rounded py-2 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white pl-5"
+                value={to}
+                onChange={(e) => {
+                  setTo(e.target.value);
+                  changeSearchQuery("to", e.target.value);
+                }}
+              />
             </div>
 
-            <button className="w-full mt-3 p-2 bg-gray-300 px-5 dark:bg-gray-500 hover:bg-gray-700 hover:text-gray-100">
+            <button
+              className="w-full mt-3 p-2 bg-gray-300 px-5 dark:bg-gray-500 hover:bg-gray-700 hover:text-gray-100"
+              onClick={() => fetchCategory(page)}
+            >
               Filter
             </button>
             <hr className="bg-gray-100 h-[1px] my-4" />
-            <p className="text-xl">Filter by color</p>
+            <p className="text-xl">Filter by colors</p>
             <div className="flex flex-col gap-4 my-4">
               {filterColors?.map((item, index) => (
                 <div
@@ -607,6 +728,8 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                         type="checkbox"
                         className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
                         id={`check-${item?.color}`}
+                        checked={colors.includes(item?.color)}
+                        onChange={() => handleCheckboxChange(item?.color)}
                       />
                       <span className="absolute text-white dark:text-gray-900 opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                         <FontAwesomeIcon
@@ -639,7 +762,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                       value="9"
                       id="radio-9"
                       className="hidden"
-                      onChange={handleSizeChange} // Gọi hàm khi có thay đổi
+                      onChange={(e) => setSelectedSize(e.target.value * 1)} // Gọi hàm khi có thay đổi
                       checked={selectedSize === 9} // Kiểm tra giá trị đang được chọn
                     />
                     9
@@ -652,7 +775,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                       value="12"
                       id="radio-12"
                       className="hidden"
-                      onChange={handleSizeChange}
+                      onChange={(e) => setSelectedSize(e.target.value * 1)}
                       checked={selectedSize === 12}
                     />
                     12
@@ -665,7 +788,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                       value="18"
                       id="radio-18"
                       className="hidden"
-                      onChange={handleSizeChange}
+                      onChange={(e) => setSelectedSize(e.target.value * 1)}
                       checked={selectedSize === 18}
                     />
                     18
@@ -678,7 +801,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                       value="24"
                       id="radio-24"
                       className="hidden"
-                      onChange={handleSizeChange}
+                      onChange={(e) => setSelectedSize(e.target.value * 1)}
                       checked={selectedSize === 24}
                     />
                     24
@@ -695,7 +818,9 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                       value="2"
                       id="radio-2"
                       className="hidden"
-                      onChange={handleColChange}
+                      onChange={(e) => {
+                        setSelectedCol(e.target.value * 1);
+                      }}
                       checked={selectedCol === 2}
                     />
                     2
@@ -708,7 +833,9 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                       value="3"
                       id="radio-3"
                       className="hidden"
-                      onChange={handleColChange}
+                      onChange={(e) => {
+                        setSelectedCol(e.target.value * 1);
+                      }}
                       checked={selectedCol === 3}
                     />
                     3
@@ -721,7 +848,9 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                       value="4"
                       id="radio-4"
                       className="hidden"
-                      onChange={handleColChange}
+                      onChange={(e) => {
+                        setSelectedCol(e.target.value * 1);
+                      }}
                       checked={selectedCol === 4}
                     />
                     4
@@ -731,7 +860,9 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
               <div className="relative">
                 <select
                   value={selectedOption}
-                  onChange={handleSelectChange}
+                  onChange={(e) => {
+                    setSelectedOption(e.target.value);
+                  }}
                   className="w-full bg-transparent placeholder:text-gray-400 text-sm border border-gray-200 rounded pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-gray-400 hover:border-gray-400 shadow-sm focus:shadow-md appearance-none cursor-pointer text-black bg-white dark:text-white dark:bg-gray-600"
                 >
                   <option
@@ -776,7 +907,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
               </div>
             </div>
             <div
-              className={`ml-5 grid ${
+              className={`ml-5 grid gap-5 ${
                 selectedCol === 2
                   ? "grid-cols-2"
                   : selectedCol === 3
@@ -792,9 +923,12 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
             </div>
 
             <Pagination
-              current={2}
+              current={page}
               total={100}
-              onChange={(num) => alert(num)}
+              onChange={(num) => {
+                setPage(num);
+                changeSearchQuery("page", num);
+              }}
             />
           </div>
         </div>

@@ -12,7 +12,17 @@ export const routes = [
     layout: UserLayout,
   },
   {
-    path: "/product/:type/:subtype",
+    path: "/product-category",
+    component: Category,
+    layout: UserLayout,
+  },
+  {
+    path: "/product-category/:type",
+    component: Category,
+    layout: UserLayout,
+  },
+  {
+    path: "/product-category/:type/:subtype",
     component: Category,
     layout: UserLayout,
   },

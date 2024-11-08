@@ -1,4 +1,9 @@
+import { useEffect } from "react";
+
 export default function Register() {
+  useEffect(() => {
+    document.title = "Register";
+  }, []);
   return (
     <div className="bg-white dark:bg-gray-800 text-black dark:text-white p-4 normal-case">
       <form action="" className="flex flex-col gap-1 mb-3">
@@ -22,9 +27,9 @@ export default function Register() {
         />
         <button
           type="submit"
-          className="w-full bg-black text-white py-2 mt-2 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-300"
+          className="w-full bg-black text-white py-2 mt-2 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-300 uppercase"
         >
-          ĐĂNG KÝ
+          Register
         </button>
       </form>
     </div>

@@ -7,19 +7,19 @@ export default function Product({ product }) {
   const navigate = useNavigate();
   return (
     <div
-      className="shadow border border-gray-300"
+      className="shadow border border-gray-300 rounded-lg"
       onClick={() => navigate(`/product/${product?.path}`)}
     >
       <div className="w-full relative flex justify-center group cursor-pointer">
         <img
           src={product.imgs[0]}
           alt={product.name}
-          className="group-hover:hidden aspect-[1/1] object-cover"
+          className="group-hover:hidden aspect-[1/1] object-cover rounded-t-lg"
         />
         <img
           src={product.imgs[1]}
           alt={product.name}
-          className="hidden group-hover:block aspect-[1/1] object-cover"
+          className="hidden group-hover:block aspect-[1/1] object-cover rounded-t-lg"
         />
         <div className="absolute rounded-full group/cart top-4 right-5 size-14 items-center justify-center bg-gray-50 shadow hidden group-hover:flex text-gray-900">
           <FontAwesomeIcon

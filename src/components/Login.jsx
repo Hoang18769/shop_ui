@@ -1,8 +1,12 @@
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function Login() {
+  useEffect(() => {
+    document.title = "Login";
+  }, []);
   return (
     <div className="bg-white dark:bg-gray-800 text-black dark:text-white p-4 normal-case">
       <form action="" className="flex flex-col gap-1 mb-3">
