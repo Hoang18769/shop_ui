@@ -333,13 +333,6 @@ export default function Navigation() {
                 Order
               </Link>
               <Link
-                to="/account/?tab=history"
-                className="flex gap-2 px-4 py-2 text-gray-500 hover:border-b-2 hover:border-b-black dark:hover:border-b-white text-sm"
-              >
-                <FontAwesomeIcon icon={faCartArrowDown} />
-                History
-              </Link>
-              <Link
                 to="/account/?tab=logout"
                 className="flex gap-2 px-4 py-2 text-gray-500 hover:border-b-2 hover:border-b-black dark:hover:border-b-white text-sm"
               >

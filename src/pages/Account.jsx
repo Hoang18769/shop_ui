@@ -84,7 +84,6 @@ export default function Account() {
       case "order":
       case "profile":
       case "change-password":
-      case "history":
       case "cart":
         return (
           <div className="flex flex-col justify-center items-center text-center gap-5">
@@ -178,14 +177,6 @@ export default function Account() {
               } py-2 pl-4 mr-2 bg-white dark:bg-gray-900 hover:bg-gray-300 dark:hover:bg-gray-800`}
             >
               Order
-            </button>
-            <button
-              onClick={() => changeTab("history")}
-              className={`text-left ${
-                tab === "history" ? "font-bold text-lg" : "font-semibold"
-              } py-2 pl-4 mr-2 bg-white dark:bg-gray-900 hover:bg-gray-300 dark:hover:bg-gray-800`}
-            >
-              History
             </button>
             <button
               onClick={() => changeTab("logout")}
