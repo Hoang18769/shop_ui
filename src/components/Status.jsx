@@ -55,9 +55,9 @@ export default function Status({ status }) {
   }
   return (
     <div
-      className={`h-10 py-2 px-4 rounded-full flex items-center gap-2 shadow dark:shadow-gray-400 justify-center ${bg} ${color}`}
+      className={`h-10 py-2 px-4 rounded-full flex items-center justify-start gap-2 shadow dark:shadow-gray-400 ${bg} ${color}`}
     >
-      <div className={`h-6 w-6 text-center`}>{icon}</div>
+      <div className="h-6 w-6 text-center">{icon}</div>
       <p className="font-sm font-bold"> {status}</p>
     </div>
   );
