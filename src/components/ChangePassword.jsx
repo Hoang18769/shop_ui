@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
 import NotFound from "../pages/NotFound";
+import { AppContext } from "../components/AppContext";
+import { toast } from "react-toastify";
 
 export default function ChangePassword() {
   const [query, setQuery] = useSearchParams();
   const step = query.get("step") || "1";
   const emailParam = query.get("email");
-  const loggedIn = true;
+  const { loggedIn } = useContext(AppContext);
+  const code = query.get("code");
 
   const changeStep = (newStep) => {
     query.set("step", newStep);
@@ -14,7 +17,6 @@ export default function ChangePassword() {
   };
 
   const [email, setEmail] = useState(emailParam || "");
-  const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
   const [retype, setRetype] = useState("");
 
@@ -25,6 +27,7 @@ export default function ChangePassword() {
     upperCase: false,
     numeric: false,
     lowerCase: false,
+    matchWithRetype: false,
   });
 
   useEffect(() => {
@@ -40,39 +43,112 @@ export default function ChangePassword() {
     }
   }, [step]);
 
-  const handlePrepare = (e) => {
+  const handlePrepare = async (e) => {
     e.preventDefault();
-    setQuery(query.append("email", email));
-    changeStep("2");
+    const response = await fetch(
+      `${process.env.REACT_APP_BE_ORIGIN}/update-password/${email}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+
+    if (data.code === 200) {
+      toast.info(
+        "An email has been sent to your email please check and follow the instructions"
+      );
+      setQuery(query.append("email", email));
+      changeStep("2");
+    } else {
+      toast.error(data.message);
+    }
   };
 
-  const handleVerifyOtp = (e) => {
-    e.preventDefault();
-    changeStep("3");
+  const handleVerify = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BE_ORIGIN}/update-password/verify/${email}?code=${code}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.code === 200) {
+      changeStep("3");
+    } else {
+      toast.error(data.message);
+    }
   };
 
-  const validatePassword = (pwd) => {
+  const handleResend = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BE_ORIGIN}/update-password/resend/${email}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (data.code === 200) {
+      toast.info(`A verification email has been sent to your email. Please click on
+              the "Verify" button to continue.`);
+      query.delete("code");
+      setQuery(query);
+    } else {
+      toast.error(data.message);
+    }
+  };
+
+  const validatePassword = (pwd, retype) => {
     setCriteria({
       minLength: pwd.length >= 8,
       specialChar: /[@$!%*?&]/.test(pwd),
       upperCase: /[A-Z]/.test(pwd),
       numeric: /[0-9]/.test(pwd),
       lowerCase: /[a-z]/.test(pwd),
+      matchWithRetype: pwd === retype,
     });
   };
 
   useEffect(() => {
-    validatePassword(password);
-  }, [password]);
+    validatePassword(password, retype);
+  }, [password, retype]);
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    const response = await fetch(
+      `${process.env.REACT_APP_BE_ORIGIN}/update-password/change/${email}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({ password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+
+    if (data.code === 200) {
+      toast.success("Update password success!");
+    } else {
+      toast.error(data.message);
+    }
+  };
   switch (step) {
     case "1":
       return (
-        <form
-          action=""
-          className="flex flex-col gap-1 mb-3"
-          onSubmit={handlePrepare}
-        >
+        <form className="flex flex-col gap-1 mb-3" onSubmit={handlePrepare}>
           <label className="block text-sm font-bold mb-2" htmlFor="email">
             Email
           </label>
@@ -94,42 +170,35 @@ export default function ChangePassword() {
         </form>
       );
     case "2":
-      return (
-        <form
-          action=""
-          className="flex flex-col gap-1 mb-3"
-          onSubmit={handleVerifyOtp}
-        >
-          <label className="block text-sm font-bold mb-2" htmlFor="otp">
-            OTP
-          </label>
-          <input
-            className="shadow border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white"
-            id="otp"
-            type="text"
-            maxLength="6"
-            minLength="6"
-            pattern="^\d*$"
-            required
-            placeholder={`Enter the 6-digit OTP received in the email ${email}`}
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-          />
-          <div className="self-end flex gap-2">
-            <p>Not received otp?</p>
-            <button className="font-semibold">Resend?</button>
+      if (!code) {
+        return (
+          <div className="bg-white flex flex-col gap-5 dark:bg-gray-800 text-black dark:text-white p-4 normal-case">
+            <h2 className="text-xl text-center">
+              A verification email has been sent to your email. Please click on
+              the "Verify" button to continue.
+            </h2>
+            <div className="self-end flex gap-2">
+              <p>Not received email?</p>
+              <button className="font-semibold" onClick={handleResend}>
+                Resend?
+              </button>
+            </div>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-black text-white py-2 mt-2 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-300 uppercase"
-          >
-            submit
-          </button>
-        </form>
-      );
+        );
+      } else {
+        handleVerify();
+        return (
+          <div className="flex gap-2">
+            <p>Not received email or verify code has expired?</p>
+            <button className="font-semibold" onClick={handleResend}>
+              Resend?
+            </button>
+          </div>
+        );
+      }
     case "3":
       return (
-        <form action="" className="flex flex-col gap-4 mb-3">
+        <form onSubmit={handleUpdate} className="flex flex-col gap-4 mb-3">
           <div>
             <label className="block text-sm font-bold mb-2" htmlFor="password">
               New Password
@@ -195,6 +264,13 @@ export default function ChangePassword() {
                 }
               >
                 At least 1 lowercase letter
+              </li>
+              <li
+                className={
+                  criteria.matchWithRetype ? "text-green-500" : "text-red-500"
+                }
+              >
+                Password must match retype
               </li>
             </ul>
           </div>
