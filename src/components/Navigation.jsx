@@ -15,9 +15,11 @@ import Authentication from "./Login";
 import { Link } from "react-router-dom";
 import SideCart from "./SideCart";
 import DarkModeButton from "./DarkModeButton";
-import { faCartArrowDown } from "@fortawesome/free-solid-svg-icons/faCartArrowDown";
+import { AppContext } from "../components/AppContext";
+import { useContext } from "react";
+
 export default function Navigation() {
-  const loggedIn = true;
+  const { loggedIn } = useContext(AppContext);
 
   return (
     <nav className="z-50 border-y-2 border-y-black bg-white dark:bg-gray-900 dark:text-white dark:border-y-white">
@@ -359,7 +361,7 @@ export default function Navigation() {
                   Login
                 </h6>
                 <Link
-                  to="/account/?tab=signup"
+                  to="/account/?tab=register"
                   className="hover:text-gray-600 dark:hover:text-gray-200 hover:font-normal cursor-pointer"
                 >
                   Create an account

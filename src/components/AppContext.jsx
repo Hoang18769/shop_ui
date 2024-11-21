@@ -1,9 +1,13 @@
 import React, { createContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 export const AppContext = createContext();
 
 export default function AppContextProvider({ children }) {
   const [user, setUser] = useState();
   const [cart, setCart] = useState();
+  const [token, setToken] = useState();
+  const [loggedIn, setLoggedIn] = useState();
+  const [refreshResult, setRefreshResult] = useState(true);
   const [category, setCategory] = useState({
     top: [
       {
@@ -42,17 +46,27 @@ export default function AppContextProvider({ children }) {
       { name: "Bags", path: "bags" },
     ],
   });
-  const token = localStorage.getItem("token");
-  const fetchUser = () => {
-    console.log("fetch user info");
-    setUser({
-      id: "01930b52-1ed3-7615-a3a0-744f1f41f97c",
-      firstname: "Thắng",
-      lastname: "Trần Đoàn Xuân",
-      email: "user@test.com",
-      platform: "APP",
-      role: "USER",
-    });
+  const fetchUser = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_BE_ORIGIN}/users/profile`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (data.code === 200) {
+        setUser(data.body);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      setRefreshResult(false);
+    }
   };
 
   const fetchCart = () => {
@@ -129,18 +143,61 @@ export default function AppContextProvider({ children }) {
     });
   };
 
+  const refreshToken = async () => {
+    if (refreshResult) {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_BE_ORIGIN}/auth/refresh`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
+
+        const data = await response.json();
+        if (data.code === 200) {
+          setToken(data.body.accessToken);
+        } else {
+          if (token) {
+            toast.error("You need login again!");
+          }
+        }
+      } catch (error) {
+        setRefreshResult(false);
+      }
+    }
+  };
+
   useEffect(() => {
     if (token) {
+      setLoggedIn(true);
       fetchUser();
       fetchCart();
     } else {
-      console.log("token is null");
+      setLoggedIn(false);
+      refreshToken();
     }
-  }, []);
+    const timer = setInterval(() => refreshToken(), 24000); //4 phút 1 lần
+    return () => clearInterval(timer);
+  }, [token]);
 
   return (
     <AppContext.Provider
-      value={{ cart, setCart, category, token, user, setUser }}
+      value={{
+        cart,
+        setCart,
+        category,
+        token,
+        setToken,
+        loggedIn,
+        setLoggedIn,
+        setToken,
+        user,
+        setUser,
+      }}
     >
       {children}
     </AppContext.Provider>

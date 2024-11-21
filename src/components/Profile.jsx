@@ -1,12 +1,46 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AppContext } from "./AppContext";
+import { toast } from "react-toastify";
 
 export default function Profile() {
+  const { user, setUser, token } = useContext(AppContext);
+  const [firstname, setFirstname] = useState();
+  const [lastname, setLastname] = useState();
+
   useEffect(() => {
     document.title = "Profile";
   }, []);
+  useEffect(() => {
+    setFirstname(user?.firstname || "");
+    setLastname(user?.lastname || "");
+  }, [user]);
+
+  const handleChange = async (e) => {
+    e.preventDefault();
+    const response = await fetch(
+      `${process.env.REACT_APP_BE_ORIGIN}/users/update-profile`,
+      {
+        method: "PUT",
+        body: JSON.stringify({ firstname, lastname }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+
+    if (data.code === 200) {
+      toast.success("Update profile success!");
+      setUser({ ...user, firstname, lastname });
+    } else {
+      toast.error(data.message);
+    }
+  };
+
   return (
     <div>
-      <form action="" className="flex flex-col gap-3">
+      <form onSubmit={handleChange} className="flex flex-col gap-3">
         <div className="flex gap-3">
           <div className="w-1/2">
             <label className="block text-lg font-bold mb-2" htmlFor="firstname">
@@ -17,6 +51,8 @@ export default function Profile() {
               id="firstname"
               type="text"
               placeholder="Firstname"
+              value={firstname}
+              onChange={(e) => setFirstname(e.target.value)}
               required
             />
           </div>
@@ -28,12 +64,17 @@ export default function Profile() {
               className="shadow border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white"
               id="lastname"
               type="text"
+              value={lastname}
+              onChange={(e) => setLastname(e.target.value)}
               placeholder="Lastname"
               required
             />
           </div>
         </div>
-        <button className="text-center py-2 bg-black text-white dark:text-black dark:bg-white hover:opacity-50">
+        <button
+          type="submit"
+          className="text-center py-2 bg-black text-white dark:text-black dark:bg-white hover:opacity-50"
+        >
           Apply change
         </button>
       </form>

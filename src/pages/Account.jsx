@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Login from "../components/Login";
 import { useSearchParams } from "react-router-dom";
 import Register from "../components/Register";
@@ -8,9 +8,10 @@ import Profile from "../components/Profile";
 import Logout from "../components/Logout";
 import Cart from "../components/Cart";
 import Order from "./Order";
+import { AppContext } from "../components/AppContext";
 export default function Account() {
   const [query, setQuery] = useSearchParams();
-  const loggedIn = true;
+  const { loggedIn } = useContext(AppContext);
   const tab = query.get("tab") || (loggedIn ? "profile" : "login");
   const changeTab = (newTab) => {
     setQuery({ tab: newTab });
@@ -34,7 +35,7 @@ export default function Account() {
                 process your order quickly and easily.
               </p>
               <button
-                onClick={() => changeTab("signup")}
+                onClick={() => changeTab("register")}
                 className="bg-gray-200 px-5 py-2 hover:opacity-50 dark:bg-gray-600 mt-4"
               >
                 REGISTER
@@ -42,7 +43,7 @@ export default function Account() {
             </div>
           </div>
         );
-      case "signup":
+      case "register":
         return (
           <div className="grid grid-cols-1 lg:grid-cols-2 lg:divide-x">
             <div className="p-10 lg:pl-20">
@@ -101,9 +102,7 @@ export default function Account() {
       case "logout":
         return (
           <div className="flex flex-col justify-center items-center text-center gap-5">
-            <h2 className="text-2xl font-bold">
-              You are logged out.
-            </h2>
+            <h2 className="text-2xl font-bold">You are logged out.</h2>
             <button
               onClick={() => changeTab("login")}
               className="w-1/2 bg-black text-white py-2 mt-2 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-300 uppercase"
@@ -111,7 +110,8 @@ export default function Account() {
               Login
             </button>
           </div>
-        );      default:
+        );
+      default:
         return <NotFound />;
     }
   } else {
