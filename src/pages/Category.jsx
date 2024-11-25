@@ -24,7 +24,7 @@ export default function Category() {
   const { category } = useContext(AppContext);
   const [products, setProducts] = useState([]);
   const [filterColors, setFilterColors] = useState([]);
-  const [selectedSize, setSelectedSize] = useState(query.get("pageSize"));
+  const [selectedSize, setSelectedSize] = useState(query.get("pageSize") * 1 || 12);
   const [selectedCol, setSelectedCol] = useState(2);
   const [selectedOption, setSelectedOption] = useState("1");
   const [filterSizes, setFilterSizes] = useState([]);
@@ -51,13 +51,18 @@ export default function Category() {
   };
 
   const fetchCategory = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BE_ORIGIN}/products/search?${query.toString()}`
-    );
+    let url = `${
+      process.env.REACT_APP_BE_ORIGIN
+    }/products/search?${query.toString()}`;
+
+    if (subtype) {
+      url = url.concat(`&subtype=${subtype.replace("-", " ")}`);      
+    } else if (type) {
+      url = url.concat(`&type=${type}`)
+    }
+    const response = await fetch(url);
     const data = await response.json();
     if (data.code === 200) {
-      console.log(data.body);
-
       setProducts(data.body?.content);
       setTotalPage(data.body.totalPages);
     }
@@ -95,6 +100,7 @@ export default function Category() {
   };
   useEffect(() => {
     fetchFilterColorsAndSizes();
+    fetchCategory();
     if (type) {
       if (subtype) {
         document.title = category[type]
