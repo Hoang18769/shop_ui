@@ -8,7 +8,7 @@ export default function Product({ product }) {
   return (
     <div
       className="shadow border border-gray-300 rounded-lg"
-      onClick={() => navigate(`/product${product?.path}`)}
+      onClick={() => navigate(`/product/${product?.path}`)}
     >
       <div className="w-full relative flex justify-center group cursor-pointer">
         <img
