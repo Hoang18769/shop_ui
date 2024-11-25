@@ -15,6 +15,8 @@ export default function Product() {
   const selectedSize = query.get("size") || "";
   const selectedQuantity = parseInt(query.get("quantity")) || 1;
   const [product, setProduct] = useState(null);
+  const [imgs, setImgs] = useState(null);
+  const [variants, setVariants] = useState(null);
   const [xPercent, setXPercent] = useState(0);
   const [yPercent, setYPercent] = useState(0);
   const [mirrorPosition, setMirrorPosition] = useState({ x: 0, y: 0 });
@@ -31,57 +33,6 @@ export default function Product() {
     if (newQuantity < 0 || newQuantity > MAX_ITEM_QUANTITY) return;
     changeQuery("quantity", newQuantity);
   };
-
-  useEffect(() => {
-    setProduct({
-      id: 1,
-      name: "Relaxed Fit Kaki Pants",
-      path: "rlkpants",
-      price: 250000,
-      quantity: 10,
-      description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-      colors: [
-        {
-          code: "#000000",
-          name: "đen",
-        },
-        {
-          code: "#FF0000",
-          name: "đỏ",
-        },
-        {
-          code: "#FFFFFF",
-          name: "trắng",
-        },
-      ],
-      type: {
-        id: 1,
-        subType: "long pants",
-        type: "bottom",
-      },
-      imgs: [
-        "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/07ad7756-72d7-47b4-b68b-b34a0e448c2c.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/Commercial-Frame-Relaxed-Kaki-Pants-1.jpg",
-        "https://nocturnal.vn/wp-content/uploads/2024/05/Commercial-Frame-Relaxed-Kaki-Pants-2.jpg",
-      ],
-      sizes: ["S", "M", "L", "XL", "2XL", "3XL"],
-    });
-  }, []);
 
   const handleMouseMove = (e) => {
     if (window.innerWidth >= 1024) {
@@ -100,17 +51,36 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
   };
 
   const handleBtnChangeSlide = (v) => {
-    const len = product?.imgs.length;
+    const len = imgs?.length;
     if (index + v < 0 || index + v >= len) return;
     setIndex(index + v);
   };
+  const fetchProduct = async (path) => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BE_ORIGIN}/products/${path}`
+    );
+    const data = await response.json();
+    if (data.code === 200) {
+      setProduct(data.body.product);
+      setVariants(data.body.variants);
+      setImgs(data.body.imgs);
+      document.title = data.body.product?.name;
+    } else {
+      console.error(data);
+    }
+  };
+  useEffect(() => {
+    fetchProduct(path);
+  }, [path]);
+  console.warn(imgs);
+
   const handleAddToCart = () => {};
   return (
-    <div className="flex flex-col sm:flex-col md:flex-row lg:flex-row md:p-10">
+    <div className="flex flex-col sm:flex-col md:flex-row lg:flex-row md:p-10 text-lg">
       <div
-        className={`hidden lg:flex flex-col lg:w-[10%] h-[500px] overflow-y-auto`}
+        className={`hidden lg:flex flex-col lg:w-[10%] h-[500px] bg-white overflow-y-auto`}
       >
-        {product?.imgs?.map((i, idx) => (
+        {imgs?.map((i, idx) => (
           <img
             key={i}
             src={i}
@@ -130,7 +100,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
           <FontAwesomeIcon icon={faAngleLeft} />
         </button>
         <img
-          src={product?.imgs?.[index]}
+          src={imgs?.[index]}
           ref={imgRef}
           className="w-full h-[500px] object-contain lg:group-hover:w-11/12 lg:object-cover lg:group-hover:object-contain"
           onMouseMove={handleMouseMove}
@@ -138,7 +108,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
           alt={product?.name}
         />
         <button
-          disabled={index === product?.imgs?.length - 1}
+          disabled={index === imgs?.length - 1}
           className="block lg:hidden lg:group-hover:block w-10 h-10 bg-gray-200 rounded-full dark:bg-gray-400 absolute disabled:opacity-50 top-1/2 right-0"
           onClick={() => handleBtnChangeSlide(1)}
         >
@@ -149,7 +119,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
             id="zoom-mirror"
             className="w-[150px] h-[150px] bg-cover bg-center bg-no-repeat absolute border-2 rounded-full shadow"
             style={{
-              backgroundImage: `url(${product?.imgs?.[index]})`,
+              backgroundImage: `url(${imgs?.[index]})`,
               backgroundSize: "1500px",
               backgroundPosition: `${xPercent}% ${yPercent}%`,
               left: `${mirrorPosition.x}px`,
@@ -163,8 +133,8 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
       <div className="w-full md:w-[50%] px-4 flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">{product?.name}</h2>
         <p>
-          Price:{" "}
-          {product?.price.toLocaleString("vi-VN", {
+          Price:
+          {product?.price?.toLocaleString("vi-VN", {
             style: "currency",
             currency: "VND",
           })}
@@ -198,14 +168,14 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
           <div className="flex gap-2 ml-4 flex-wrap">
             {product?.sizes?.map((size, index) => (
               <div
-                onClick={() => changeQuery("size", size)}
+                onClick={() => changeQuery("size", size?.name)}
                 key={index}
                 className="rounded-full text-center w-16 py-2 border-2 border-black dark:border-white hover:opacity-30 cursor-pointer relative"
               >
-                {size}
+                {size?.name}
                 <div
                   className={`absolute w-full h-full py-2 rounded-full text-center top-0 bg-black text-white dark:text-black dark:bg-white
-                    ${selectedSize === size ? "block" : "hidden"}`}
+                    ${selectedSize === size.name ? "block" : "hidden"}`}
                 >
                   <FontAwesomeIcon icon={faCheck} />
                 </div>
@@ -213,6 +183,18 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
             ))}
           </div>
         </div>
+        {selectedColor && selectedSize && (
+          <div className="size-container flex">
+            <p>Quantity: </p>
+            <p>
+              {variants?.find(
+                (variant) =>
+                  variant.color.name === selectedColor &&
+                  variant.size.name === selectedSize
+              )?.quantity || <span className="text-red-500">0</span>}
+            </p>
+          </div>
+        )}
         <div className="flex justify-between gap-4 items-center h-14">
           <div className="quantity-editor h-14 flex">
             <button
