@@ -8,16 +8,16 @@ export default function Product({ product }) {
   return (
     <div
       className="shadow border border-gray-300 rounded-lg"
-      onClick={() => navigate(`/product/${product?.path}`)}
+      onClick={() => navigate(`/product${product?.path}`)}
     >
       <div className="w-full relative flex justify-center group cursor-pointer">
         <img
-          src={product.imgs[0]}
+          src={product.img}
           alt={product.name}
           className="group-hover:hidden aspect-[1/1] object-cover rounded-t-lg"
         />
         <img
-          src={product.imgs[1]}
+          src={product.hoverImg}
           alt={product.name}
           className="hidden group-hover:block aspect-[1/1] object-cover rounded-t-lg"
         />
@@ -43,6 +43,16 @@ export default function Product({ product }) {
             style={{ backgroundColor: color.code }}
             title={color?.name}
           ></div>
+        ))}
+      </div>
+      <div className="flex gap-2 m-4">
+        {product?.sizes?.map((size, index) => (
+          <div
+            key={index}
+            className="rounded-full text-center w-16 py-2 border-2 border-black dark:border-white hover:opacity-30 cursor-pointer relative"
+          >
+            {size.name}
+          </div>
         ))}
       </div>
     </div>

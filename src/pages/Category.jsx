@@ -9,445 +9,92 @@ import React, { useState, useEffect, useContext } from "react";
 import Pagination from "../components/Pagination";
 import Product from "../components/Product";
 import { Link, useParams, useSearchParams } from "react-router-dom";
-import debounce from "lodash/debounce";
 import { AppContext } from "../components/AppContext";
-
-const debouncedFetchCategory = debounce((callback) => {
-  callback();
-}, 1000);
+import MultiRangeSlider from "../components/MultiRangeSlider";
 
 export default function Category() {
   const { type, subtype } = useParams();
   const [query, setQuery] = useSearchParams();
   const [page, setPage] = useState(parseInt(query.get("page")) || 1);
-  const [from, setFrom] = useState(parseInt(query.get("from")) || 50000);
-  const [to, setTo] = useState(parseInt(query.get("to")) || 1000000);
+  const [totalPage, setTotalPage] = useState(1);
+
   const [colors, setColors] = useState(
     query.get("colors") ? query.get("colors").split(",") : []
   );
-  const changeSearchQuery = (key, value) => {
-    query.set(key, value);
-    setQuery(query);
-  };
   const { category } = useContext(AppContext);
   const [products, setProducts] = useState([]);
   const [filterColors, setFilterColors] = useState([]);
-  const [selectedSize, setSelectedSize] = useState(12);
+  const [selectedSize, setSelectedSize] = useState(query.get("pageSize"));
   const [selectedCol, setSelectedCol] = useState(2);
   const [selectedOption, setSelectedOption] = useState("1");
+  const [filterSizes, setFilterSizes] = useState([]);
+  const [sizes, setSizes] = useState(
+    query.get("sizes") ? query.get("sizes").split(",") : []
+  );
 
-  const fetchCategory = (page) => {
-    setProducts([
-      {
-        id: 1,
-        name: "Relaxed Fit Kaki Pants",
-        path: "rlkpants",
-        price: 250000,
-        quantity: 10,
-        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
+  const changeSearchQueryWithArray = (key, values) => {
+    const updatedQuery = new URLSearchParams(query.toString());
 
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
+    updatedQuery.delete(key);
 
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-        colors: [
-          {
-            code: "#FFFFFF",
-            name: "black",
-          },
-          {
-            code: "#FF0000",
-            name: "red",
-          },
-        ],
-        type: {
-          id: 1,
-          name: "long pants",
-          type: "bottom",
-        },
-        imgs: [
-          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-        ],
-      },
-      {
-        id: 2,
-        name: "Relaxed Fit Kaki Pants",
-        path: "rlkpants",
-        price: 250000,
-        quantity: 10,
-        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-        colors: [
-          {
-            code: "#FFFFFF",
-            name: "black",
-          },
-          {
-            code: "#FF0000",
-            name: "red",
-          },
-        ],
-        type: {
-          id: 1,
-          name: "long pants",
-          type: "bottom",
-        },
-        imgs: [
-          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-        ],
-      },
-      {
-        id: 3,
-        name: "Relaxed Fit Kaki Pants",
-        path: "rlkpants",
-        price: 250000,
-        quantity: 10,
-        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-        colors: [
-          {
-            code: "#FFFFFF",
-            name: "black",
-          },
-          {
-            code: "#FF0000",
-            name: "red",
-          },
-        ],
-        type: {
-          id: 1,
-          name: "long pants",
-          type: "bottom",
-        },
-        imgs: [
-          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-        ],
-      },
-      {
-        id: 4,
-        name: "Relaxed Fit Kaki Pants",
-        path: "rlkpants",
-        price: 250000,
-        quantity: 10,
-        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-        colors: [
-          {
-            code: "#FFFFFF",
-            name: "black",
-          },
-          {
-            code: "#FF0000",
-            name: "red",
-          },
-        ],
-        type: {
-          id: 1,
-          name: "long pants",
-          type: "bottom",
-        },
-        imgs: [
-          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-        ],
-      },
-      {
-        id: 5,
-        name: "Relaxed Fit Kaki Pants",
-        path: "rlkpants",
-        price: 250000,
-        quantity: 10,
-        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-        colors: [
-          {
-            code: "#FFFFFF",
-            name: "black",
-          },
-          {
-            code: "#FF0000",
-            name: "red",
-          },
-        ],
-        type: {
-          id: 1,
-          name: "long pants",
-          type: "bottom",
-        },
-        imgs: [
-          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-        ],
-      },
-      {
-        id: 6,
-        name: "Relaxed Fit Kaki Pants",
-        path: "rlkpants",
-        price: 250000,
-        quantity: 10,
-        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-        colors: [
-          {
-            code: "#FFFFFF",
-            name: "black",
-          },
-          {
-            code: "#FF0000",
-            name: "red",
-          },
-        ],
-        type: {
-          id: 1,
-          name: "long pants",
-          type: "bottom",
-        },
-        imgs: [
-          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-        ],
-      },
-      {
-        id: 7,
-        name: "Relaxed Fit Kaki Pants",
-        path: "rlkpants",
-        price: 250000,
-        quantity: 10,
-        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-        colors: [
-          {
-            code: "#FFFFFF",
-            name: "black",
-          },
-          {
-            code: "#FF0000",
-            name: "red",
-          },
-        ],
-        type: {
-          id: 1,
-          name: "long pants",
-          type: "bottom",
-        },
-        imgs: [
-          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-        ],
-      },
-      {
-        id: 8,
-        name: "Relaxed Fit Kaki Pants",
-        path: "rlkpants",
-        price: 250000,
-        quantity: 10,
-        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-        colors: [
-          {
-            code: "#FFFFFF",
-            name: "black",
-          },
-          {
-            code: "#FF0000",
-            name: "red",
-          },
-        ],
-        type: {
-          id: 1,
-          name: "long pants",
-          type: "bottom",
-        },
-        imgs: [
-          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-        ],
-      },
-      {
-        id: 9,
-        name: "Relaxed Fit Kaki Pants",
-        path: "rlkpants",
-        price: 250000,
-        quantity: 10,
-        description: `NOCTURNAL ® Relaxed Fit Kaki Pants
-Không chỉ trendy &đẹp với đường xếp li độc đáo , Quần Kaki ống suông nhà Nọc còn được nâng cấp về chất vải & có độ hoàn thiện cao, mang lại trải nghiệm mặc thoải mái hơn bao giờ hết, xứng đáng được gọi là cực phẩm cần phải có!
-
-• Chất liệu : Premium cotton kaki dày dặn, mịn mềm.
-
-• Thiết kế xếp li không chỉ làm quần lên form đẹp mà còn siêu thoải mái khi mặc với phần đùi rộng.
-
-• :Phần lưng được bo chun co giãn dễ mặc và tùy chỉnh, phù hợp mọi dáng người.
-
-• Size: S / M / L / XL
-
-Xem từng ảnh để thấy những chi tiết thú vị nhé!
-
- 
-
-Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổi kích cỡ.`,
-        colors: [
-          {
-            code: "#FFFFFF",
-            name: "black",
-          },
-          {
-            code: "#FF0000",
-            name: "red",
-          },
-        ],
-        type: {
-          id: 1,
-          name: "long pants",
-          type: "bottom",
-        },
-        imgs: [
-          "https://nocturnal.vn/wp-content/uploads/2024/05/4-1-scaled.jpg",
-          "https://nocturnal.vn/wp-content/uploads/2024/05/5-4-scaled.jpg",
-        ],
-      },
-    ]);
-    console.count("call API");
-  };
-  useEffect(() => {
-    fetchCategory(page);
-  }, [page]);
-
-  useEffect(() => {
-    debouncedFetchCategory(() => {
-      fetchCategory(page);
-      changeSearchQuery("colors", colors.join(","));
-      console.warn("colors changed");
+    values.forEach((value) => {
+      updatedQuery.append(key, value);
     });
+
+    setQuery(updatedQuery);
+  };
+
+  const changeSearchQuery = (key, value) => {
+    const updatedQuery = new URLSearchParams(query.toString());
+    updatedQuery.set(key, value);
+    setQuery(updatedQuery);
+  };
+
+  const fetchCategory = async () => {
+    const response = await fetch(
+      `${process.env.REACT_APP_BE_ORIGIN}/products/search?${query.toString()}`
+    );
+    const data = await response.json();
+    if (data.code === 200) {
+      console.log(data.body);
+
+      setProducts(data.body?.content);
+      setTotalPage(data.body.totalPages);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategory();
+  }, [query]);
+
+  useEffect(() => {
+    changeSearchQueryWithArray("colors", colors);
   }, [colors]);
-  const fetchFilterColors = () => {
-    setFilterColors([
-      {
-        color: "Cream",
-        quantity: 10,
-      },
-      {
-        color: "Black",
-        quantity: 9,
-      },
-      {
-        color: "Lead Gray",
-        quantity: 12,
-      },
-    ]);
+
+  useEffect(() => {
+    changeSearchQueryWithArray("sizes", sizes);
+  }, [sizes]);
+
+  const fetchFilterColorsAndSizes = async () => {
+    let url = "";
+    if (subtype) {
+      url = `${
+        process.env.REACT_APP_BE_ORIGIN
+      }/products/colors_sizes/subtype/${subtype.replace("-", " ")}`;
+    } else if (type) {
+      url = `${process.env.REACT_APP_BE_ORIGIN}/products/colors_sizes/type/${type}`;
+    } else {
+      url = `${process.env.REACT_APP_BE_ORIGIN}/products/colors_sizes`;
+    }
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.code === 200) {
+      setFilterColors(data.body.colors);
+      setFilterSizes(data.body.sizes);
+    }
   };
   useEffect(() => {
-    fetchFilterColors();
+    fetchFilterColorsAndSizes();
     if (type) {
       if (subtype) {
         document.title = category[type]
@@ -460,17 +107,26 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
       document.title = "Category".toUpperCase();
     }
   }, [type, subtype]);
-  useEffect(() => {
-    return () => {
-      debouncedFetchCategory.cancel();
-    };
-  }, []);
-  const handleCheckboxChange = (color) => {
+
+  const handleColorsChange = (color) => {
     const updatedColors = colors.includes(color)
       ? colors.filter((c) => c !== color)
       : [...colors, color];
 
     setColors(updatedColors);
+  };
+
+  const handleSizesChange = (size) => {
+    const updatedSizes = sizes.includes(size)
+      ? sizes.filter((s) => s !== size)
+      : [...sizes, size];
+
+    setSizes(updatedSizes);
+  };
+
+  const handleSelectedSizeChange = (size) => {
+    setSelectedSize(size);
+    changeSearchQuery("pageSize", size);
   };
 
   let categoryContent;
@@ -589,7 +245,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                 />
               </svg>
             </div>
-            <div className="px-10 pt-2 fixed top-0 left-0 h-full w-1/2 bg-white dark:bg-black dark:text-white z-50 transform -translate-x-full transition-transform duration-300 peer-checked/filter-menu:translate-x-0 flex flex-col font-medium uppercase">
+            <div className="px-10 pt-2 fixed top-0 left-0 h-full w-1/2 bg-white dark:bg-black dark:text-white z-50 transform -translate-x-full transition-transform duration-300 peer-checked/filter-menu:translate-x-0 flex flex-col font-medium uppercase overflow-y-auto">
               <label
                 className="self-end mb-2 hover:scale-110"
                 htmlFor="filter-menu"
@@ -597,37 +253,17 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                 <FontAwesomeIcon className="text-2xl" icon={faXmark} />
               </label>
               <div>
-                <p className="text-xl">FILTER BY PRICE</p>
-                <div>
-                  <div className="w-12 mr-1">From</div>
-                  <input
-                    className="w-full shadow appearance-none border rounded py-2 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white pl-5"
-                    value={from}
-                    onChange={(e) => {
-                      setFrom(e.target.value);
-                      changeSearchQuery("from", e.target.value);
-                    }}
-                  />
-                  <div className="w-12 mr-1">To</div>
-                  <input
-                    className="w-full shadow appearance-none border rounded py-2 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white pl-5"
-                    value={to}
-                    onChange={(e) => {
-                      setTo(e.target.value);
-                      changeSearchQuery("to", e.target.value);
-                    }}
+                <p className="text-xl uppercase">Filter by price</p>
+                <div className="mt-5 mb-14">
+                  <MultiRangeSlider
+                    curMin={query.get("minPrice")}
+                    curMax={query.get("maxPrice")}
+                    onMinChange={(min) => changeSearchQuery("minPrice", min)}
+                    onMaxChange={(max) => changeSearchQuery("maxPrice", max)}
                   />
                 </div>
-
-                <button
-                  className="w-full mt-3 p-2 bg-gray-300 px-5 dark:bg-gray-500 hover:bg-gray-700 hover:text-gray-100"
-                  onClick={() => fetchCategory(page)}
-                >
-                  FILTER
-                </button>
-
                 <hr className="bg-gray-100 h-[1px] my-4" />
-                <p className="text-xl">Filter by colors</p>
+                <p className="text-xl uppercase">Filter by colors</p>
                 <div className="flex flex-col gap-4 my-4">
                   {filterColors?.map((item, index) => (
                     <div
@@ -637,14 +273,14 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                       <div className="inline-flex items-center">
                         <label
                           className="flex items-center cursor-pointer relative"
-                          htmlFor={`check-${item?.color}`}
+                          htmlFor={`check-${item?.name}`}
                         >
                           <input
                             type="checkbox"
                             className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
-                            id={`check-${item?.color}`}
-                            checked={colors.includes(item?.color)}
-                            onChange={() => handleCheckboxChange(item?.color)}
+                            id={`check-${item?.name}`}
+                            checked={colors.includes(item?.name)}
+                            onChange={() => handleColorsChange(item?.name)}
                           />
                           <span className="absolute text-white dark:text-gray-900 opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                             <FontAwesomeIcon
@@ -655,12 +291,47 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                         </label>
                         <label
                           className="cursor-pointer ml-2 text-gray-600 dark:text-white text-md"
-                          htmlFor={`check-${item?.color}`}
+                          htmlFor={`check-${item?.name}`}
                         >
-                          {item?.color}
+                          {item?.name}
                         </label>
                       </div>
-                      <p>({item?.quantity})</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xl uppercase">Filter by sizes</p>
+                <div className="flex flex-col gap-4 my-4">
+                  {filterSizes?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center text-lg"
+                    >
+                      <div className="inline-flex items-center">
+                        <label
+                          className="flex items-center cursor-pointer relative"
+                          htmlFor={`check-${item?.name}`}
+                        >
+                          <input
+                            type="checkbox"
+                            className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
+                            id={`check-${item?.name}`}
+                            checked={sizes.includes(item?.name)}
+                            onChange={() => handleSizesChange(item?.name)}
+                          />
+                          <span className="absolute text-white dark:text-gray-900 opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <FontAwesomeIcon
+                              className="h-3.5 w-3.5 text-current"
+                              icon={faCheck}
+                            />
+                          </span>
+                        </label>
+                        <label
+                          className="cursor-pointer ml-2 text-gray-600 dark:text-white text-md"
+                          htmlFor={`check-${item?.name}`}
+                        >
+                          {item?.name}
+                        </label>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -674,7 +345,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
           </div>
           <Pagination
             current={page}
-            total={100}
+            total={totalPage}
             onChange={(num) => {
               setPage(num);
               changeSearchQuery("page", num);
@@ -683,36 +354,17 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
         </div>
         <div className="hidden lg:flex my-4">
           <div className="w-1/4">
-            <p className="text-xl">FILTER BY PRICE</p>
-            <div>
-              <div className="w-12 mr-1">From</div>
-              <input
-                className="w-full shadow appearance-none border rounded py-2 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white pl-5"
-                value={from}
-                onChange={(e) => {
-                  setFrom(e.target.value);
-                  changeSearchQuery("from", e.target.value);
-                }}
-              />
-              <div className="w-12 mr-1">To</div>
-              <input
-                className="w-full shadow appearance-none border rounded py-2 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white pl-5"
-                value={to}
-                onChange={(e) => {
-                  setTo(e.target.value);
-                  changeSearchQuery("to", e.target.value);
-                }}
+            <p className="text-xl uppercase">Filter by price</p>
+            <div className="mt-5 mb-14">
+              <MultiRangeSlider
+                curMin={query.get("minPrice")}
+                curMax={query.get("maxPrice")}
+                onMinChange={(min) => changeSearchQuery("minPrice", min)}
+                onMaxChange={(max) => changeSearchQuery("maxPrice", max)}
               />
             </div>
-
-            <button
-              className="w-full mt-3 p-2 bg-gray-300 px-5 dark:bg-gray-500 hover:bg-gray-700 hover:text-gray-100"
-              onClick={() => fetchCategory(page)}
-            >
-              Filter
-            </button>
             <hr className="bg-gray-100 h-[1px] my-4" />
-            <p className="text-xl">Filter by colors</p>
+            <p className="text-xl uppercase">Filter by colors</p>
             <div className="flex flex-col gap-4 my-4">
               {filterColors?.map((item, index) => (
                 <div
@@ -722,14 +374,14 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                   <div className="inline-flex items-center">
                     <label
                       className="flex items-center cursor-pointer relative"
-                      htmlFor={`check-${item?.color}`}
+                      htmlFor={`check-${item?.name}`}
                     >
                       <input
                         type="checkbox"
                         className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
-                        id={`check-${item?.color}`}
-                        checked={colors.includes(item?.color)}
-                        onChange={() => handleCheckboxChange(item?.color)}
+                        id={`check-${item?.name}`}
+                        checked={colors.includes(item?.name)}
+                        onChange={() => handleColorsChange(item?.name)}
                       />
                       <span className="absolute text-white dark:text-gray-900 opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                         <FontAwesomeIcon
@@ -740,12 +392,47 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                     </label>
                     <label
                       className="cursor-pointer ml-2 text-gray-600 dark:text-white text-md"
-                      htmlFor={`check-${item?.color}`}
+                      htmlFor={`check-${item?.name}`}
                     >
-                      {item?.color}
+                      {item?.name}
                     </label>
                   </div>
-                  <p>({item?.quantity})</p>
+                </div>
+              ))}
+            </div>
+            <p className="text-xl uppercase">Filter by sizes</p>
+            <div className="flex flex-col gap-4 my-4">
+              {filterSizes?.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center text-lg"
+                >
+                  <div className="inline-flex items-center">
+                    <label
+                      className="flex items-center cursor-pointer relative"
+                      htmlFor={`check-${item?.name}`}
+                    >
+                      <input
+                        type="checkbox"
+                        className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
+                        id={`check-${item?.name}`}
+                        checked={sizes.includes(item?.name)}
+                        onChange={() => handleSizesChange(item?.name)}
+                      />
+                      <span className="absolute text-white dark:text-gray-900 opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <FontAwesomeIcon
+                          className="h-3.5 w-3.5 text-current"
+                          icon={faCheck}
+                        />
+                      </span>
+                    </label>
+                    <label
+                      className="cursor-pointer ml-2 text-gray-600 dark:text-white text-md"
+                      htmlFor={`check-${item?.name}`}
+                    >
+                      {item?.name}
+                    </label>
+                  </div>
                 </div>
               ))}
             </div>
@@ -762,7 +449,9 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                       value="9"
                       id="radio-9"
                       className="hidden"
-                      onChange={(e) => setSelectedSize(e.target.value * 1)} // Gọi hàm khi có thay đổi
+                      onChange={(e) =>
+                        handleSelectedSizeChange(e.target.value * 1)
+                      } // Gọi hàm khi có thay đổi
                       checked={selectedSize === 9} // Kiểm tra giá trị đang được chọn
                     />
                     9
@@ -775,7 +464,9 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                       value="12"
                       id="radio-12"
                       className="hidden"
-                      onChange={(e) => setSelectedSize(e.target.value * 1)}
+                      onChange={(e) =>
+                        handleSelectedSizeChange(e.target.value * 1)
+                      }
                       checked={selectedSize === 12}
                     />
                     12
@@ -788,7 +479,9 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                       value="18"
                       id="radio-18"
                       className="hidden"
-                      onChange={(e) => setSelectedSize(e.target.value * 1)}
+                      onChange={(e) =>
+                        handleSelectedSizeChange(e.target.value * 1)
+                      }
                       checked={selectedSize === 18}
                     />
                     18
@@ -801,7 +494,9 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
                       value="24"
                       id="radio-24"
                       className="hidden"
-                      onChange={(e) => setSelectedSize(e.target.value * 1)}
+                      onChange={(e) =>
+                        handleSelectedSizeChange(e.target.value * 1)
+                      }
                       checked={selectedSize === 24}
                     />
                     24
@@ -924,7 +619,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
 
             <Pagination
               current={page}
-              total={100}
+              total={totalPage}
               onChange={(num) => {
                 setPage(num);
                 changeSearchQuery("page", num);
