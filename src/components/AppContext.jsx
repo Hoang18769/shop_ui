@@ -45,7 +45,7 @@ export default function AppContextProvider({ children }) {
       { name: "Socks", path: "socks" },
       { name: "Bags", path: "bags" },
     ],
-  });
+  });    
   const fetchUser = () => {
     fetch(`${process.env.REACT_APP_BE_ORIGIN}/users/profile`, {
       method: "GET",
@@ -111,21 +111,22 @@ export default function AppContextProvider({ children }) {
       });
   };
 
-useEffect(() => {
-  if (token && refreshResult) {
-    setLoggedIn(true);
-    fetchUser();
-    fetchCart();
+  useEffect(() => {
+    if (token && refreshResult) {
+      setLoggedIn(true);
+      fetchUser();
+      fetchCart();
 
-    const refreshInterval = setInterval(() => {
+      const refreshInterval = setInterval(() => {
+        refreshToken();
+      }, 4 * 60 * 1000);
+      return () => clearInterval(refreshInterval);
+    } else {
+      setLoggedIn(false);
+      setCart(null);
       refreshToken();
-    }, 5 * 60 * 1000); 
-    return () => clearInterval(refreshInterval);
-  } else {
-    setLoggedIn(false);
-    refreshToken();
-  }
-}, [token, refreshResult]);
+    }
+  }, [token, refreshResult]);
 
   return (
     <AppContext.Provider

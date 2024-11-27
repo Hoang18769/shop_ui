@@ -10,9 +10,30 @@ import { toast } from "react-toastify";
 export default function SideCart() {
   const { cart, setCart, fetchCart, token } = useContext(AppContext);
   const quantity = useMemo(() => {});
+
   const updateCartQuantity = useCallback(
-    debounce((itemId, newQuantity) => {}, 1000),
-    [quantity]
+    debounce((variantId, newQuantity) => {
+      fetch(`${process.env.REACT_APP_BE_ORIGIN}/carts/update-quantity`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          variantId: variantId,
+          quantity: newQuantity,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.code === 200) {
+          } else {
+            toast.error(data.message);
+          }
+        })
+        .catch((e) => toast.error(e.message));
+    }, 1000),
+    [quantity, token]
   );
 
   const handleChangeQuantity = (variantId, newQuantity) => {
@@ -23,12 +44,18 @@ export default function SideCart() {
       // Cập nhật các item trong giỏ hàng
       const updatedItems = prevCart?.items?.map((item) =>
         item?.variant?.id === variantId
-          ? { ...item, quantity: newQuantity }
+          ? {
+              ...item,
+              quantity: Math.min(newQuantity, item?.variant?.quantity),
+            }
           : item
       );
 
       return { ...prevCart, items: updatedItems };
     });
+
+    // Gọi API hoặc hàm cập nhật trên server
+    updateCartQuantity(variantId, newQuantity);
   };
 
   const handleRemoveItem = (variantId) => {
@@ -90,7 +117,7 @@ export default function SideCart() {
                 alt={item?.product?.name}
                 className="w-24 object-contain"
               />
-              <div className="max-w-[50%] lg:max-w-[80%]">
+              <div className="max-w-[50%] lg:max-w-[80%] flex flex-col gap-2">
                 <Link
                   to={`/product/${item?.product?.path}/?color=${item?.variant?.color?.name}&size=${item?.variant?.size?.name}&quantity=${item?.quantity}`}
                   className="font-semibold"
@@ -104,47 +131,58 @@ export default function SideCart() {
                   </span>
                   <span> - {item?.variant?.size?.name}</span>
                 </Link>
+                <div className="rounded-full bg-gray-100 px-2 dark:bg-gray-800">
+                  {item?.variant?.quantity} product(s) left
+                </div>
                 <div>
-                  <div className="quantity-editor">
-                    <button
-                      className="w-10 border-2"
-                      disabled={parseInt(item?.quantity) <= 1}
-                      onClick={() => {
-                        if (item?.quantity - 1 <= 0) {
-                          handleRemoveItem(item?.variant?.id);
-                        } else {
+                  <div
+                    className={`max-h-12 max-w-24 border-2 ${
+                      item?.quantity > item?.variant?.quantity
+                        ? "border-red-500"
+                        : "border-black dark:border-white"
+                    }`}
+                  >
+                    <div className="quantity-editor h-6 flex">
+                      <button
+                        className="w-8"
+                        disabled={parseInt(item?.quantity) <= 1}
+                        onClick={() => {
+                          if (item?.quantity - 1 <= 0) {
+                            handleRemoveItem(item?.variant?.id);
+                          } else {
+                            handleChangeQuantity(
+                              item?.variant?.id,
+                              item?.quantity - 1
+                            );
+                          }
+                        }}
+                      >
+                        -
+                      </button>
+                      <input
+                        type="text"
+                        className="w-8 text-center bg-white text-black dark:bg-gray-900 dark:text-white"
+                        value={item?.quantity}
+                        onChange={(e) =>
                           handleChangeQuantity(
                             item?.variant?.id,
-                            item?.quantity - 1
-                          );
+                            parseInt(e.target.value) || 1
+                          )
                         }
-                      }}
-                    >
-                      -
-                    </button>
-                    <input
-                      type="number"
-                      className="w-10 border-y-2 text-center bg-white text-black dark:bg-black dark:text-white"
-                      value={item?.quantity}
-                      onChange={(e) =>
-                        handleChangeQuantity(
-                          item?.variant?.id,
-                          parseInt(e.target.value) || 1
-                        )
-                      }
-                    />
-                    <button
-                      className="w-10 border-2"
-                      disabled={parseInt(item?.quantity) >= MAX_ITEM_QUANTITY}
-                      onClick={() =>
-                        handleChangeQuantity(
-                          item?.variant?.id,
-                          item?.quantity + 1
-                        )
-                      }
-                    >
-                      +
-                    </button>
+                      />
+                      <button
+                        className="w-8"
+                        disabled={parseInt(item?.quantity) >= MAX_ITEM_QUANTITY}
+                        onClick={() =>
+                          handleChangeQuantity(
+                            item?.variant?.id,
+                            item?.quantity + 1
+                          )
+                        }
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <p>

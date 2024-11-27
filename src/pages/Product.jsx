@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { AppContext } from "../components/AppContext";
 
 export default function Product() {
-  const { token } = useContext(AppContext);
+  const { token, isLoggedIn } = useContext(AppContext);
   const { path } = useParams();
   const [query, setQuery] = useSearchParams();
   const selectedColor = query.get("color") || "";
@@ -85,6 +85,11 @@ export default function Product() {
   }, [path]);
 
   const handleAddToCart = () => {
+    if (!isLoggedIn) {
+      toast.warn("You need to login to perform this action");
+      return;
+    }
+
     if (!selectedColor) {
       toast.error("Please choose a color!");
       return;
@@ -93,6 +98,7 @@ export default function Product() {
       toast.error("Please choose a size!");
       return;
     }
+
     fetch(`${process.env.REACT_APP_BE_ORIGIN}/carts/add`, {
       method: "POST",
       headers: {
@@ -236,31 +242,45 @@ export default function Product() {
           </div>
         )}
         <div className="flex justify-between gap-4 items-center h-14">
-          <div className="quantity-editor h-14 flex">
-            <button
-              className="w-10 border-2"
-              disabled={parseInt(selectedQuantity) <= 1}
-              onClick={() => updateQuantity(parseInt(selectedQuantity) - 1)}
-            >
-              -
-            </button>
-            <input
-              type="text"
-              className="w-14 border-y-2 text-center bg-white text-black dark:bg-gray-900 dark:text-white"
-              value={selectedQuantity}
-              onChange={(e) => updateQuantity(parseInt(e.target.value) || 1)}
-            />
-            <button
-              className="w-10 border-2"
-              onClick={() => updateQuantity(parseInt(selectedQuantity) + 1)}
-            >
-              +
-            </button>
+          <div
+            className={`h-10 max-w-24 border-2 ${
+              selectedQuantity > variant?.quantity
+                ? "border-red-500"
+                : "border-black dark:border-white"
+            }`}
+          >
+            <div className="quantity-editor flex">
+              <button
+                className="w-10"
+                disabled={parseInt(selectedQuantity) <= 1}
+                onClick={() => updateQuantity(parseInt(selectedQuantity) - 1)}
+              >
+                -
+              </button>
+              <input
+                type="text"
+                className="w-10 text-center bg-white text-black dark:bg-gray-900 dark:text-white"
+                value={selectedQuantity}
+                onChange={(e) => updateQuantity(parseInt(e.target.value) || 1)}
+              />
+              <button
+                className="w-10"
+                onClick={() => updateQuantity(parseInt(selectedQuantity) + 1)}
+              >
+                +
+              </button>
+            </div>
           </div>
           <button
             onClick={handleAddToCart}
-            disabled={parseInt(selectedQuantity) >= MAX_ITEM_QUANTITY}
-            className="w-full bg-black h-14 text-white py-2 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-300 uppercase"
+            disabled={
+              parseInt(selectedQuantity) >= MAX_ITEM_QUANTITY || !isLoggedIn
+            }
+            className={`w-full bg-black h-14 text-white py-2 dark:bg-white dark:text-black uppercase ${
+              isLoggedIn
+                ? " hover:bg-gray-800 dark:hover:bg-gray-300"
+                : "opacity-50"
+            }`}
           >
             Add to cart
           </button>

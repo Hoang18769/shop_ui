@@ -40,9 +40,11 @@ export default function Navigation() {
           <DarkModeButton />
           <label htmlFor="cart">
             <FontAwesomeIcon className="text-2xl" icon={faCartShopping} />
-            <span className="absolute -top-2 right-2 bg-rose-600 text-white size-4 rounded-full text-center text-xs">
-              {cart?.item?.length}
-            </span>
+            {cart?.items?.length > 0 && (
+              <span className="absolute -top-2 right-2 bg-rose-600 text-white size-4 rounded-full text-center text-xs">
+                {cart?.items?.length}
+              </span>
+            )}
           </label>
         </span>
         <div className="px-10 pt-10 fixed top-0 left-0 h-full w-1/2 bg-white dark:bg-black dark:text-white z-50 transform -translate-x-full transition-transform duration-300 peer-checked/menu:translate-x-0 flex flex-col font-medium uppercase">
