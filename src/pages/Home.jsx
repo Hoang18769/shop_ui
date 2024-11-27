@@ -22,7 +22,6 @@ export default function Home() {
     require("../assets/images/category/category-4.jpg"),
   ];
   const vid1 = require("../assets/videos/vid1.mp4");
-  console.log(vid1);
 
   const [newProducts, setNewProducts] = useState();
   const [bestSellers, setBestSellers] = useState();
@@ -32,7 +31,6 @@ export default function Home() {
   const [bestSellersTotalPage, setBestSellersTotalPage] = useState(1);
 
   const fetchNewProducts = (newProductsPage) => {
-    console.count("Call API: new products");
     setNewProducts([
       {
         id: 1,
@@ -417,7 +415,6 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
   };
 
   const fetchBestSellers = (bestSellersPage) => {
-    console.count("Call API: best sellers");
     setBestSellers([
       {
         id: 1,
@@ -864,8 +861,8 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
           </Link>
         </div>
         <div className="new-products-container grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {newProducts?.map((p) => (
-            <Product product={p} />
+          {newProducts?.map((p, index) => (
+            <Product key={index} product={p} />
           ))}
         </div>
         <Link
@@ -883,8 +880,8 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
           </Link>
         </div>
         <div className="new-products-container grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {bestSellers?.map((p) => (
-            <Product product={p} />
+          {bestSellers?.map((p, index) => (
+            <Product key={index} product={p} />
           ))}
         </div>
         <Link

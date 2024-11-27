@@ -1,15 +1,23 @@
-import React, { useCallback, useContext, useEffect, useMemo } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Link } from "react-router-dom";
 import { AppContext } from "./AppContext";
 import debounce from "lodash.debounce";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faRotateRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MAX_ITEM_QUANTITY } from "../constant";
+import { toast } from "react-toastify";
+import Loading from "./Loading";
 
 export default function Cart() {
-  const { cart, setCart } = useContext(AppContext);
+  const { cart, setCart, fetchCart, token } = useContext(AppContext);
   const quantity = useMemo(() => {});
-
+  const [isLoading, setLoading] = useState(false);
   useEffect(() => {
     document.title = "Cart";
   }, []);
@@ -18,65 +26,97 @@ export default function Cart() {
     debounce((itemId, newQuantity) => {}, 1000),
     [quantity]
   );
-
-  const handleChangeQuantity = (productId, newQuantity) => {
+  const handleChangeQuantity = (variantId, newQuantity) => {
+    // Kiểm tra nếu số lượng không hợp lệ
     if (newQuantity < 0 || newQuantity > MAX_ITEM_QUANTITY) return;
+
     setCart((prevCart) => {
-      const updatedProducts = prevCart.products.map((item) =>
-        item.product.id === productId
+      // Cập nhật các item trong giỏ hàng
+      const updatedItems = prevCart?.items?.map((item) =>
+        item?.variant?.id === variantId
           ? { ...item, quantity: newQuantity }
           : item
       );
-      return { ...prevCart, products: updatedProducts };
+
+      return { ...prevCart, items: updatedItems };
     });
-    updateCartQuantity(productId, newQuantity);
+
+    // Gọi API hoặc hàm cập nhật trên server
+    updateCartQuantity(variantId, newQuantity);
   };
 
-  const handleRemoveItem = (productId) => {
-    setCart((prevCart) => {
-      const updatedProducts = prevCart.products.filter(
-        (item) => item.product.id !== productId
-      );
-      return { ...prevCart, products: updatedProducts };
-    });
+  const handleRemoveItem = (variantId) => {
+    setLoading(true);
+    fetch(`${process.env.REACT_APP_BE_ORIGIN}/carts/remove/${variantId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          setCart((prevCart) => {
+            const updatedItems = prevCart?.items?.filter(
+              (item) => item?.variant?.id !== variantId
+            );
+            return { ...prevCart, items: updatedItems };
+          });
+          toast.success("Remove item success");
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((e) => toast.error(e.message))
+      .finally(() => setLoading(false));
   };
 
-  return (
+  return !isLoading ? (
     <div className="flex flex-col lg:flex-row">
       <div className="w-full lg:w-3/4 px-2">
         <div className="grid grid-cols-5 uppercase border-b-2 border-b-gray-100 text-center">
-          <div></div>
+          <div>
+            <button
+              onClick={() => fetchCart()}
+              className="w-8 h-8 aspect-1 text-2xl hover:bg-gray-200 hover:rounded-full dark:hover:text-black"
+            >
+              <FontAwesomeIcon icon={faRotateRight} />
+            </button>
+          </div>
           <div>Product</div>
           <div>Price</div>
           <div>Quantity</div>
           <div>Temporarily calculated</div>
         </div>
         <div className="flex flex-col">
-          {cart?.products?.map((item) => (
+          {cart?.items?.map((item) => (
             <div className="grid grid-cols-5 py-2 border-b-2 border-b-gray-100">
               <div className="flex items-center justify-center gap-2 mr-2">
                 <button
-                  onClick={() => handleRemoveItem(item.product.id)}
+                  onClick={() => handleRemoveItem(item?.variant?.id)}
                   className="w-8 h-8 aspect-1 hover:bg-gray-200 hover:rounded-full dark:hover:text-black"
                 >
                   <FontAwesomeIcon icon={faXmark} />
                 </button>
                 <img
-                  src={item?.product?.img}
+                  src={item?.variant?.img}
                   alt={item?.product?.name}
                   className="w-24 object-contain"
                 />
               </div>
               <div className="flex items-center justify-center">
                 <Link
-                  to={`/product/${item?.product?.path}/?color=${item?.color?.name}&size=${item?.size}&quantity=${item?.quantity}`}
+                  to={`/product/${item?.product?.path}/?color=${item?.variant?.color?.name}&size=${item?.variant?.size?.name}&quantity=${item?.quantity}`}
                   className="font-semibold"
                 >
                   {item?.product?.name}
-                  <span style={{ color: item?.color?.code }} className="px-1">
-                    {item?.color?.name}
+                  <span
+                    style={{ color: item?.variant?.color?.code }}
+                    className="px-1"
+                  >
+                    {item?.variant?.color?.name}
                   </span>
-                  <span> - {item?.size}</span>
+                  <span> - {item?.variant?.size?.name}</span>
                 </Link>
               </div>
               <div className="flex items-center justify-center">
@@ -92,14 +132,14 @@ export default function Cart() {
                 <div className="quantity-editor h-10 flex">
                   <button
                     className="w-10 border-2"
-                    disabled={parseInt(item.quantity) <= 1}
+                    disabled={parseInt(item?.quantity) <= 1}
                     onClick={() => {
                       if (item?.quantity - 1 <= 0) {
-                        handleRemoveItem(item.product.id);
+                        handleRemoveItem(item?.variant?.id);
                       } else {
                         handleChangeQuantity(
-                          item.product.id,
-                          item.quantity - 1
+                          item?.variant?.id,
+                          item?.quantity - 1
                         );
                       }
                     }}
@@ -112,7 +152,7 @@ export default function Cart() {
                     value={item?.quantity}
                     onChange={(e) =>
                       handleChangeQuantity(
-                        item.product.id,
+                        item?.variant?.id,
                         parseInt(e.target.value) || 1
                       )
                     }
@@ -122,7 +162,7 @@ export default function Cart() {
                     disabled={parseInt(item?.quantity) >= MAX_ITEM_QUANTITY}
                     onClick={() =>
                       handleChangeQuantity(
-                        item?.product?.id,
+                        item?.variant?.id,
                         item?.quantity + 1
                       )
                     }
@@ -150,9 +190,9 @@ export default function Cart() {
           <div className="flex justify-between">
             <p>Subtotal</p>
             <p>
-              {cart?.products
+              {cart?.items
                 ?.reduce((total, item) => {
-                  return total + item.quantity * item.product.price;
+                  return total + item?.quantity * item?.product?.price;
                 }, 0)
                 .toLocaleString("vi-VN", {
                   style: "currency",
@@ -170,5 +210,7 @@ export default function Cart() {
         </div>
       </div>
     </div>
+  ) : (
+    <Loading />
   );
 }

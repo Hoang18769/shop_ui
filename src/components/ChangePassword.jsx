@@ -43,32 +43,31 @@ export default function ChangePassword() {
     }
   }, [step]);
 
-  const handlePrepare = async (e) => {
+  const handlePrepare = (e) => {
     e.preventDefault();
-    const response = await fetch(
-      `${process.env.REACT_APP_BE_ORIGIN}/update-password/${email}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
-
-    if (data.code === 200) {
-      toast.info(
-        "An email has been sent to your email please check and follow the instructions"
-      );
-      setQuery(query.append("email", email));
-      changeStep("2");
-    } else {
-      toast.error(data.message);
-    }
+    fetch(`${process.env.REACT_APP_BE_ORIGIN}/update-password/${email}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          toast.info(
+            "An email has been sent to your email please check and follow the instructions"
+          );
+          setQuery(query.append("email", email));
+          changeStep("2");
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((e) => toast.error(e.message));
   };
 
-  const handleVerify = async () => {
-    const response = await fetch(
+  const handleVerify = () => {
+    fetch(
       `${process.env.REACT_APP_BE_ORIGIN}/update-password/verify/${email}?code=${code}`,
       {
         method: "PUT",
@@ -76,19 +75,19 @@ export default function ChangePassword() {
           "Content-Type": "application/json",
         },
       }
-    );
-
-    const data = await response.json();
-
-    if (data.code === 200) {
-      changeStep("3");
-    } else {
-      toast.error(data.message);
-    }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          changeStep("3");
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((e) => toast.error(e.message));
   };
-
-  const handleResend = async () => {
-    const response = await fetch(
+  const handleResend = () => {
+    fetch(
       `${process.env.REACT_APP_BE_ORIGIN}/update-password/resend/${email}`,
       {
         method: "GET",
@@ -96,18 +95,19 @@ export default function ChangePassword() {
           "Content-Type": "application/json",
         },
       }
-    );
-
-    const data = await response.json();
-
-    if (data.code === 200) {
-      toast.info(`A verification email has been sent to your email. Please click on
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          toast.info(`A verification email has been sent to your email. Please click on
               the "Verify" button to continue.`);
-      query.delete("code");
-      setQuery(query);
-    } else {
-      toast.error(data.message);
-    }
+          query.delete("code");
+          setQuery(query);
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((e) => toast.error(e.message));
   };
 
   const validatePassword = (pwd, retype) => {
@@ -125,9 +125,9 @@ export default function ChangePassword() {
     validatePassword(password, retype);
   }, [password, retype]);
 
-  const handleUpdate = async (e) => {
+  const handleUpdate = (e) => {
     e.preventDefault();
-    const response = await fetch(
+    fetch(
       `${process.env.REACT_APP_BE_ORIGIN}/update-password/change/${email}`,
       {
         method: "PUT",
@@ -136,14 +136,16 @@ export default function ChangePassword() {
           "Content-Type": "application/json",
         },
       }
-    );
-    const data = await response.json();
-
-    if (data.code === 200) {
-      toast.success("Update password success!");
-    } else {
-      toast.error(data.message);
-    }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          toast.success("Update password success!");
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((e) => toast.error(e.message));
   };
   switch (step) {
     case "1":

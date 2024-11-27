@@ -15,27 +15,26 @@ export default function Profile() {
     setLastname(user?.lastname || "");
   }, [user]);
 
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     e.preventDefault();
-    const response = await fetch(
-      `${process.env.REACT_APP_BE_ORIGIN}/users/update-profile`,
-      {
-        method: "PUT",
-        body: JSON.stringify({ firstname, lastname }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await response.json();
-
-    if (data.code === 200) {
-      toast.success("Update profile success!");
-      setUser({ ...user, firstname, lastname });
-    } else {
-      toast.error(data.message);
-    }
+    fetch(`${process.env.REACT_APP_BE_ORIGIN}/users/update-profile`, {
+      method: "PUT",
+      body: JSON.stringify({ firstname, lastname }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          toast.success("Update profile success!");
+          setUser({ ...user, firstname, lastname });
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((e) => toast.error(e.message));
   };
 
   return (

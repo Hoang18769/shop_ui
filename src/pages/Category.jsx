@@ -11,20 +11,24 @@ import Product from "../components/Product";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { AppContext } from "../components/AppContext";
 import MultiRangeSlider from "../components/MultiRangeSlider";
+import { toast } from "react-toastify";
+import Loading from "../components/Loading";
 
 export default function Category() {
   const { type, subtype } = useParams();
   const [query, setQuery] = useSearchParams();
   const [page, setPage] = useState(parseInt(query.get("page")) || 1);
   const [totalPage, setTotalPage] = useState(1);
-
+  const [isLoading, setLoading] = useState(false);
   const [colors, setColors] = useState(
     query.get("colors") ? query.get("colors").split(",") : []
   );
   const { category } = useContext(AppContext);
   const [products, setProducts] = useState([]);
   const [filterColors, setFilterColors] = useState([]);
-  const [selectedSize, setSelectedSize] = useState(query.get("pageSize") * 1 || 12);
+  const [selectedSize, setSelectedSize] = useState(
+    query.get("pageSize") * 1 || 12
+  );
   const [selectedCol, setSelectedCol] = useState(2);
   const [selectedOption, setSelectedOption] = useState("1");
   const [filterSizes, setFilterSizes] = useState([]);
@@ -50,22 +54,27 @@ export default function Category() {
     setQuery(updatedQuery);
   };
 
-  const fetchCategory = async () => {
+  const fetchCategory = () => {
+    setLoading(true);
     let url = `${
       process.env.REACT_APP_BE_ORIGIN
     }/products/search?${query.toString()}`;
 
     if (subtype) {
-      url = url.concat(`&subtype=${subtype.replace("-", " ")}`);      
+      url = url.concat(`&subtype=${subtype.replace("-", " ")}`);
     } else if (type) {
-      url = url.concat(`&type=${type}`)
+      url = url.concat(`&type=${type}`);
     }
-    const response = await fetch(url);
-    const data = await response.json();
-    if (data.code === 200) {
-      setProducts(data.body?.content);
-      setTotalPage(data.body.totalPages);
-    }
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          setProducts(data.body?.content);
+          setTotalPage(data.body.totalPages);
+        }
+      })
+      .catch((e) => toast.error(e.message))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -80,8 +89,9 @@ export default function Category() {
     changeSearchQueryWithArray("sizes", sizes);
   }, [sizes]);
 
-  const fetchFilterColorsAndSizes = async () => {
+  const fetchFilterColorsAndSizes = () => {
     let url = "";
+    setLoading(true);
     if (subtype) {
       url = `${
         process.env.REACT_APP_BE_ORIGIN
@@ -91,12 +101,16 @@ export default function Category() {
     } else {
       url = `${process.env.REACT_APP_BE_ORIGIN}/products/colors_sizes`;
     }
-    const response = await fetch(url);
-    const data = await response.json();
-    if (data.code === 200) {
-      setFilterColors(data.body.colors);
-      setFilterSizes(data.body.sizes);
-    }
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          setFilterColors(data.body.colors);
+          setFilterSizes(data.body.sizes);
+        }
+      })
+      .catch((e) => toast.error(e.message))
+      .finally(() => setLoading(false));
   };
   useEffect(() => {
     fetchFilterColorsAndSizes();
@@ -173,7 +187,7 @@ export default function Category() {
     );
   }
 
-  return (
+  return !isLoading ? (
     <div>
       <nav className="mb-4">
         {/* Mobile menu */}
@@ -635,5 +649,7 @@ export default function Category() {
         </div>
       </section>
     </div>
+  ) : (
+    <Loading />
   );
 }

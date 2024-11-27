@@ -19,7 +19,7 @@ import { AppContext } from "../components/AppContext";
 import { useContext } from "react";
 
 export default function Navigation() {
-  const { loggedIn } = useContext(AppContext);
+  const { loggedIn, cart } = useContext(AppContext);
 
   return (
     <nav className="z-50 border-y-2 border-y-black bg-white dark:bg-gray-900 dark:text-white dark:border-y-white">
@@ -41,7 +41,7 @@ export default function Navigation() {
           <label htmlFor="cart">
             <FontAwesomeIcon className="text-2xl" icon={faCartShopping} />
             <span className="absolute -top-2 right-2 bg-rose-600 text-white size-4 rounded-full text-center text-xs">
-              1
+              {cart?.item?.length}
             </span>
           </label>
         </span>
@@ -380,9 +380,11 @@ export default function Navigation() {
           </label>
           <label htmlFor="cart" className="relative">
             <FontAwesomeIcon className="text-2xl" icon={faCartShopping} />
-            <span className="absolute -top-1 -right-1 bg-rose-600 text-white size-4 rounded-full text-center text-xs">
-              1
-            </span>
+            {cart?.items?.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-rose-600 text-white size-4 rounded-full text-center text-xs">
+                {cart?.items?.length}
+              </span>
+            )}
           </label>
         </div>
       </div>

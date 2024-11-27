@@ -1,37 +1,53 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+} from "react";
 import "./MultiRangeSlider.css";
 import { debounce } from "lodash";
 
 const MultiRangeSlider = ({ curMin, curMax, onMinChange, onMaxChange }) => {
+  console.count("render");
   const min = 0,
     max = 1000000;
 
-  // Đảm bảo giá trị khởi tạo nằm trong khoảng cho phép
-  const [minVal, setMinVal] = useState(
-    Math.max(min, Math.min(curMin || min, max))
+  // Memoize initial values to prevent unnecessary re-computation
+  const initialMinVal = useMemo(
+    () => Math.max(min, Math.min(curMin || min, max)),
+    [curMin, min, max]
   );
-  const [maxVal, setMaxVal] = useState(
-    Math.min(max, Math.max(curMax || max, min))
+
+  const initialMaxVal = useMemo(
+    () => Math.min(max, Math.max(curMax || max, min)),
+    [curMax, min, max]
   );
+
+  const [minVal, setMinVal] = useState(initialMinVal);
+  const [maxVal, setMaxVal] = useState(initialMaxVal);
   const minValRef = useRef(minVal);
   const maxValRef = useRef(maxVal);
   const range = useRef(null);
 
-  // Convert to percentage
+  // Memoize percent calculation to prevent recreation on every render
   const getPercent = useCallback(
     (value) => Math.round(((value - min) / (max - min)) * 100),
     [min, max]
   );
 
-  const debouncedMinChange = debounce((value) => {
-    onMinChange(value);
-  }, 1000);
+  // Memoize debounced functions to prevent recreation
+  const debouncedMinChange = useMemo(
+    () => debounce((value) => onMinChange(value), 1000),
+    [onMinChange]
+  );
 
-  const debouncedMaxChange = debounce((value) => {
-    onMaxChange(value);
-  }, 1000);
+  const debouncedMaxChange = useMemo(
+    () => debounce((value) => onMaxChange(value), 1000),
+    [onMaxChange]
+  );
 
-  // Update the range's visual position
+  // Optimize range update effect
   useEffect(() => {
     const minPercent = getPercent(minVal);
     const maxPercent = getPercent(maxValRef.current);
@@ -51,31 +67,28 @@ const MultiRangeSlider = ({ curMin, curMax, onMinChange, onMaxChange }) => {
     }
   }, [maxVal, getPercent]);
 
-  useEffect(() => {
-    debouncedMinChange(minVal);
-    return () => debouncedMinChange.cancel();
-  }, [minVal]);
+  // Simplified change handlers
+  const handleMinChange = useCallback(
+    (e) => {
+      const value = Number(e.target.value);
+      const newValue = Math.max(min, Math.min(value, maxVal - 1));
+      setMinVal(newValue);
+      minValRef.current = newValue;
+      debouncedMinChange(newValue);
+    },
+    [maxVal, debouncedMinChange]
+  );
 
-  useEffect(() => {
-    debouncedMaxChange(maxVal);
-    return () => debouncedMaxChange.cancel();
-  }, [maxVal]);
-
-  const handleMinChange = (e) => {
-    const value = Number(e.target.value);
-    // Đảm bảo minVal không vượt quá maxVal - 1 và không nhỏ hơn min
-    const newValue = Math.max(min, Math.min(value, maxVal - 1));
-    setMinVal(newValue);
-    minValRef.current = newValue;
-  };
-
-  const handleMaxChange = (e) => {
-    const value = Number(e.target.value);
-    // Đảm bảo maxVal không nhỏ hơn minVal + 1 và không vượt quá max
-    const newValue = Math.min(max, Math.max(value, minVal + 1));
-    setMaxVal(newValue);
-    maxValRef.current = newValue;
-  };
+  const handleMaxChange = useCallback(
+    (e) => {
+      const value = Number(e.target.value);
+      const newValue = Math.min(max, Math.max(value, minVal + 1));
+      setMaxVal(newValue);
+      maxValRef.current = newValue;
+      debouncedMaxChange(newValue);
+    },
+    [minVal, debouncedMaxChange]
+  );
 
   return (
     <div className="container">
@@ -107,4 +120,4 @@ const MultiRangeSlider = ({ curMin, curMax, onMinChange, onMaxChange }) => {
   );
 };
 
-export default MultiRangeSlider;
+export default React.memo(MultiRangeSlider);

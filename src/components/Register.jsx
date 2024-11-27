@@ -112,49 +112,45 @@ export default function Register() {
       });
   };
 
-  const handleVerify = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BE_ORIGIN}/register/verify?code=${code}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      }
-    );
-
-    const data = await response.json();
-
-    if (data.code === 200) {
-      setToken(data.body.accessToken);
-      navigate("/account/?tab=profile");
-    } else {
-      toast.error(data.message);
-    }
+  const handleVerify = () => {
+    fetch(`${process.env.REACT_APP_BE_ORIGIN}/register/verify?code=${code}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          setToken(data.body.accessToken);
+          navigate("/account/?tab=profile");
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((e) => toast.error(e.message));
   };
 
-  const handleResend = async () => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BE_ORIGIN}/register/resend?email=${email}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        }
-      }
-    );
-
-    const data = await response.json();
-
-    if (data.code === 200) {
-      toast.info(`A verification email has been sent to your email. Please click on
+  const handleResend = () => {
+    fetch(`${process.env.REACT_APP_BE_ORIGIN}/register/resend?email=${email}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          toast.info(`A verification email has been sent to your email. Please click on
               the "Verify" button to continue.`);
-      query.delete("code");
-      setQuery(query);
-    } else {
-      toast.error(data.message);
-    }
+          query.delete("code");
+          setQuery(query);
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((e) => toast.error(e.message));
   };
 
   switch (step) {

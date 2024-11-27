@@ -5,7 +5,7 @@ import { faMoneyBill } from "@fortawesome/free-solid-svg-icons";
 import vnpay from "../assets/images/vnpay.svg";
 import { Link } from "react-router-dom";
 export default function Checkout() {
-  const { cart } = useContext(AppContext);
+  const { cart, fetchCart } = useContext(AppContext);
   return (
     <form className="flex flex-col gap-4">
       <div className="flex flex-col lg:flex-row justify-between">
@@ -52,12 +52,12 @@ For example, time or more detailed delivery location instructions."
             </div>
             <hr />
             <div className="grid grid-cols-1 divide-y-2 h-1/2 overflow-y-auto">
-              {cart?.products?.map((item) => (
+              {cart?.items?.map((item) => (
                 <div className="flex justify-between">
-                  <div key={item.product.id} className="flex gap-4 py-2">
+                  <div key={item?.variant?.id} className="flex gap-4 py-2">
                     <div className="flex gap-4">
                       <img
-                        src={item?.product?.img}
+                        src={item?.variant?.img}
                         alt={item?.product?.name}
                         className="w-24 object-contain"
                       />
@@ -65,12 +65,12 @@ For example, time or more detailed delivery location instructions."
                         <h4 className="font-semibold">
                           {item?.product?.name}
                           <span
-                            style={{ color: item?.color?.code }}
+                            style={{ color: item?.variant?.color?.code }}
                             className="px-1"
                           >
-                            {item?.color?.name}
+                            {item?.variant?.color?.name}
                           </span>
-                          <span> - {item?.size}</span>
+                          <span> - {item?.variant?.size?.name}</span>
                         </h4>
                       </div>
                     </div>
@@ -98,22 +98,24 @@ For example, time or more detailed delivery location instructions."
                 <div className="flex gap-2 text-2xl">
                   <p>
                     Total:
-                    {cart?.products?.reduce((total, product) => {
-                      return (
-                        total +
-                        product.quantity * parseFloat(product.product.price)
-                      )
-                    }, 0).toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      })}
+                    <span className="ml-2">
+                      {cart?.items
+                        ?.reduce((total, product) => {
+                          return (
+                            total +
+                            product.quantity * parseFloat(product.product.price)
+                          );
+                        }, 0)
+                        .toLocaleString("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        })}
+                    </span>
                   </p>
                 </div>
                 <em className="self-end text-sm">
                   Quantity:
-                  {cart?.products?.reduce((count, product) => {
-                    return count + product.quantity;
-                  }, 0)}
+                  <span className="ml-2">{cart?.items?.length || 0}</span>
                 </em>
               </div>
             </div>

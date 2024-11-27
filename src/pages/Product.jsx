@@ -4,11 +4,14 @@ import {
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { MAX_ITEM_QUANTITY } from "../constant";
+import { toast } from "react-toastify";
+import { AppContext } from "../components/AppContext";
 
 export default function Product() {
+  const { token } = useContext(AppContext);
   const { path } = useParams();
   const [query, setQuery] = useSearchParams();
   const selectedColor = query.get("color") || "";
@@ -23,7 +26,14 @@ export default function Product() {
   const [showMirror, setShowMirror] = useState(false);
   const [index, setIndex] = useState(0);
   const imgRef = useRef();
-
+  const variant =
+    selectedColor && selectedSize
+      ? variants?.find(
+          (variant) =>
+            variant.color.name === selectedColor &&
+            variant.size.name === selectedSize
+        )
+      : null;
   const changeQuery = (key, value) => {
     query.set(key, value);
     setQuery(query);
@@ -55,26 +65,60 @@ export default function Product() {
     if (index + v < 0 || index + v >= len) return;
     setIndex(index + v);
   };
-  const fetchProduct = async (path) => {
-    const response = await fetch(
-      `${process.env.REACT_APP_BE_ORIGIN}/products/${path}`
-    );
-    const data = await response.json();
-    if (data.code === 200) {
-      setProduct(data.body.product);
-      setVariants(data.body.variants);
-      setImgs(data.body.imgs);
-      document.title = data.body.product?.name;
-    } else {
-      console.error(data);
-    }
+  const fetchProduct = (path) => {
+    fetch(`${process.env.REACT_APP_BE_ORIGIN}/products/${path}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          setProduct(data.body.product);
+          setVariants(data.body.variants);
+          setImgs(data.body.imgs);
+          document.title = data.body.product?.name;
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((e) => toast.error(e.message));
   };
   useEffect(() => {
     fetchProduct(path);
   }, [path]);
-  console.warn(imgs);
 
-  const handleAddToCart = () => {};
+  const handleAddToCart = () => {
+    if (!selectedColor) {
+      toast.error("Please choose a color!");
+      return;
+    }
+    if (!selectedSize) {
+      toast.error("Please choose a size!");
+      return;
+    }
+    fetch(`${process.env.REACT_APP_BE_ORIGIN}/carts/add`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        variantId: variant?.id,
+        quantity: selectedQuantity,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          let newItem = {
+            quantity: selectedQuantity,
+            product: product,
+            variant: variant,
+          };
+          toast.success("Add to cart success");
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((e) => toast.error(e.message));
+  };
   return (
     <div className="flex flex-col sm:flex-col md:flex-row lg:flex-row md:p-10 text-lg">
       <div
@@ -187,11 +231,7 @@ export default function Product() {
           <div className="size-container flex">
             <p>Quantity: </p>
             <p>
-              {variants?.find(
-                (variant) =>
-                  variant.color.name === selectedColor &&
-                  variant.size.name === selectedSize
-              )?.quantity || <span className="text-red-500">0</span>}
+              {variant?.quantity || <span className="text-red-500">0</span>}
             </p>
           </div>
         )}
