@@ -13,6 +13,11 @@ import { AppContext } from "../components/AppContext";
 import MultiRangeSlider from "../components/MultiRangeSlider";
 import { toast } from "react-toastify";
 import Loading from "../components/Loading";
+import debounce from "lodash/debounce";
+
+const debouncedFetchCategory = debounce((callback) => {
+  callback();
+}, 1000);
 
 export default function Category() {
   const { type, subtype } = useParams();
@@ -83,11 +88,17 @@ export default function Category() {
   }, [query]);
 
   useEffect(() => {
-    changeSearchQueryWithArray("colors", colors);
+    debouncedFetchCategory(() => {
+      fetchCategory(page);
+      changeSearchQueryWithArray("colors", colors);
+    });
   }, [colors]);
 
   useEffect(() => {
-    changeSearchQueryWithArray("sizes", sizes);
+    debouncedFetchCategory(() => {
+      fetchCategory(page);
+      changeSearchQueryWithArray("sizes", sizes);
+    });
   }, [sizes]);
 
   const fetchFilterColorsAndSizes = () => {
@@ -129,6 +140,12 @@ export default function Category() {
     }
   }, [type, subtype]);
 
+  useEffect(() => {
+    return () => {
+      debouncedFetchCategory.cancel();
+    };
+  }, []);
+  
   const handleColorsChange = (color) => {
     const updatedColors = colors.includes(color)
       ? colors.filter((c) => c !== color)
@@ -153,7 +170,7 @@ export default function Category() {
   const handleNameChange = (name) => {
     setName(name);
     changeSearchQuery("name", name);
-  }
+  };
 
   let categoryContent;
   if (!type) {
