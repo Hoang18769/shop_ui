@@ -6,7 +6,7 @@ export default function AppContextProvider({ children }) {
   const [user, setUser] = useState();
   const [cart, setCart] = useState();
   const [token, setToken] = useState();
-  const [loggedIn, setLoggedIn] = useState();
+  const [loggedIn, setLoggedIn] = useState(false);
   const [refreshResult, setRefreshResult] = useState(true);
   const [category, setCategory] = useState({
     top: [
@@ -127,7 +127,7 @@ export default function AppContextProvider({ children }) {
       refreshToken();
     }
   }, [token, refreshResult]);
-
+  
   return (
     <AppContext.Provider
       value={{

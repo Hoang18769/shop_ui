@@ -89,18 +89,20 @@ export default function Category() {
 
   useEffect(() => {
     debouncedFetchCategory(() => {
-      fetchCategory(page);
       changeSearchQueryWithArray("colors", colors);
     });
   }, [colors]);
 
   useEffect(() => {
     debouncedFetchCategory(() => {
-      fetchCategory(page);
       changeSearchQueryWithArray("sizes", sizes);
     });
   }, [sizes]);
-
+  useEffect(() => {
+    debouncedFetchCategory(() => {
+      changeSearchQuery("name", name);
+    });
+  }, [name]);
   const fetchFilterColorsAndSizes = () => {
     let url = "";
     setLoading(true);
@@ -145,7 +147,7 @@ export default function Category() {
       debouncedFetchCategory.cancel();
     };
   }, []);
-  
+
   const handleColorsChange = (color) => {
     const updatedColors = colors.includes(color)
       ? colors.filter((c) => c !== color)
@@ -165,11 +167,6 @@ export default function Category() {
   const handleSelectedSizeChange = (size) => {
     setSelectedSize(size);
     changeSearchQuery("pageSize", size);
-  };
-
-  const handleNameChange = (name) => {
-    setName(name);
-    changeSearchQuery("name", name);
   };
 
   let categoryContent;
@@ -490,6 +487,15 @@ export default function Category() {
           </div>
           <div className="w-3/4 flex flex-col gap-4">
             <div className="flex items-center self-end gap-5">
+              <div>
+                <input
+                  className="shadow border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white"
+                  type="search"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Search by name"
+                />
+              </div>
               <div className="flex">
                 Display:
                 <div className="ml-3 size-selector flex gap-2">

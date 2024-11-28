@@ -12,15 +12,16 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import Authentication from "./Login";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SideCart from "./SideCart";
 import DarkModeButton from "./DarkModeButton";
 import { AppContext } from "../components/AppContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 export default function Navigation() {
   const { loggedIn, cart } = useContext(AppContext);
-
+  const [name, setName] = useState("");
+  const navigate = useNavigate();
   return (
     <nav className="z-50 border-y-2 border-y-black bg-white dark:bg-gray-900 dark:text-white dark:border-y-white">
       <input className="hidden peer/cart" type="checkbox" id="cart" />
@@ -401,11 +402,20 @@ export default function Navigation() {
           </label>
         </div>
         <hr />
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white h-20 placeholder:text-center text-center text-2xl"
-          type="search"
-          placeholder="Search for products"
-        />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            navigate(`/product-category/?name=${name}`);
+          }}
+        >
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white h-20 placeholder:text-center text-center text-2xl"
+            type="search"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Search for products"
+          />
+        </form>
         <p className="text-center font-bold text-xl">
           Type the keyword to search for the product you want
         </p>

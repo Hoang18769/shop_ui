@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { AppContext } from "../components/AppContext";
 
 export default function Product() {
-  const { token, isLoggedIn } = useContext(AppContext);
+  const { token, loggedIn } = useContext(AppContext);
   const { path } = useParams();
   const [query, setQuery] = useSearchParams();
   const selectedColor = query.get("color") || "";
@@ -25,7 +25,7 @@ export default function Product() {
   const [mirrorPosition, setMirrorPosition] = useState({ x: 0, y: 0 });
   const [showMirror, setShowMirror] = useState(false);
   const [index, setIndex] = useState(0);
-  const imgRef = useRef();
+  const imgRef = useRef();  
   const variant =
     selectedColor && selectedSize
       ? variants?.find(
@@ -85,7 +85,7 @@ export default function Product() {
   }, [path]);
 
   const handleAddToCart = () => {
-    if (!isLoggedIn) {
+    if (!loggedIn) {
       toast.warn("You need to login to perform this action");
       return;
     }
@@ -274,10 +274,10 @@ export default function Product() {
           <button
             onClick={handleAddToCart}
             disabled={
-              parseInt(selectedQuantity) >= MAX_ITEM_QUANTITY || !isLoggedIn
+              parseInt(selectedQuantity) > MAX_ITEM_QUANTITY || !loggedIn
             }
             className={`w-full bg-black h-14 text-white py-2 dark:bg-white dark:text-black uppercase ${
-              isLoggedIn
+              loggedIn
                 ? " hover:bg-gray-800 dark:hover:bg-gray-300"
                 : "opacity-50"
             }`}
