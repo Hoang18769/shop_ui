@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { AppContext } from "../components/AppContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoneyBill } from "@fortawesome/free-solid-svg-icons";
@@ -6,26 +6,18 @@ import vnpay from "../assets/images/vnpay.svg";
 import { Link } from "react-router-dom";
 export default function Checkout() {
   const { cart, fetchCart } = useContext(AppContext);
+
+  useEffect(() => {
+    document.title = "Check out";
+    fetchCart(); //get newest data
+  }, []);
+
   return (
     <form className="flex flex-col gap-4">
       <div className="flex flex-col lg:flex-row justify-between">
         <div className="px-5 py-5 w-full lg:w-1/2 lg:pb-0">
           <div className="flex flex-col gap-2">
             <h2 className="text-lg font-semibold">RECEIVED INFORMATION</h2>
-            <div className="flex justify-between gap-2">
-              <input
-                className="shadow border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white"
-                id="name"
-                type="text"
-                placeholder="Enter the fullname"
-              />
-              <input
-                className="shadow border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white"
-                id="phone"
-                type="tel"
-                placeholder="Enter the phone number"
-              />
-            </div>
             <input
               className="w-full shadow border rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white"
               id="address"
