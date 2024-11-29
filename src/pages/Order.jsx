@@ -1,50 +1,52 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Status from "../components/Status";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { AppContext } from "../components/AppContext";
 
 export default function Order() {
-  const [orders, setOrders] = useState([]);
+  const { token } = useContext(AppContext);
+  const [orders, setOrders] = useState();
 
   const fetchOrders = () => {
-    console.log("fetch Orders");
-    setOrders([
-      {
-        id: "01930b76-dff9-71ca-a794-c1d2525cda10",
-        status: "NEW",
-        orderTime: "2024/11/01 12:23:43",
-        payment: {
-          id: 1,
-          type: "COD",
-        },
+    fetch(`${process.env.REACT_APP_BE_ORIGIN}/orders/history`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-      {
-        id: "01930b76-dff9-71ca-a794-c1d2525cda11",
-        status: "SUCCESS",
-        orderTime: "2024/11/01 12:23:43",
-        payment: {
-          id: 1,
-          type: "COD",
-        },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          setOrders(data.body.content);
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((e) => toast.error(e.message));
+  };
+
+  const handleCancel = (id) => {
+    fetch(`${process.env.REACT_APP_BE_ORIGIN}/orders/cancel/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-      {
-        id: "01930b76-dff9-71ca-a794-c1d2525cda12",
-        status: "FAIL",
-        orderTime: "2024/11/01 12:23:43",
-        payment: {
-          id: 1,
-          type: "COD",
-        },
-      },
-      {
-        id: "01930b76-dff9-71ca-a794-c1d2525cda13",
-        status: "CANCEL",
-        orderTime: "2024/11/01 12:23:43",
-        payment: {
-          id: 1,
-          type: "VNPAY",
-        },
-      },
-    ]);
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.code === 200) {
+          setOrders((prevOrders) => {
+            const updatedOrders = prevOrders.map((order) =>
+              order.id === id ? { ...order, status: "CANCELLED" } : order
+            );
+            return updatedOrders;
+          });
+          toast.success("Cancel succes");
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((e) => toast.error(e.message));
   };
 
   useEffect(() => {
@@ -89,7 +91,7 @@ export default function Order() {
               <option>PACKING</option>
               <option>DELIVERY</option>
               <option>SUCCESS</option>
-              <option>CANCEL</option>
+              <option>CANCELLED</option>
               <option>FAIL</option>
             </select>
             <svg
@@ -145,7 +147,7 @@ export default function Order() {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {orders?.map((order) => (
               <tr key={order.id} className="text-center">
                 <td className="py-2 px-4 border-b">{order.id}</td>
                 <td className="py-2 px-4 border-b">
@@ -162,7 +164,10 @@ export default function Order() {
                       View Detail
                     </Link>
                     {order.status === "NEW" ? (
-                      <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700">
+                      <button
+                        onClick={() => handleCancel(order.id)}
+                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700"
+                      >
                         Cancel
                       </button>
                     ) : ["SUCCESS", "FAIL", "CANCEL"].includes(order.status) ? (

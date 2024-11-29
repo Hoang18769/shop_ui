@@ -43,12 +43,14 @@ export default function Navigation() {
             <FontAwesomeIcon className="text-2xl" icon={faCartShopping} />
             {cart?.items?.length > 0 && (
               <span className="absolute -top-2 right-2 bg-rose-600 text-white size-4 rounded-full text-center text-xs">
-                {cart?.items?.length}
+                {cart?.items?.reduce((total, item) => {
+                  return total + (item?.quantity || 0);
+                }, 0)}
               </span>
             )}
           </label>
         </span>
-        <div className="px-10 pt-10 fixed top-0 left-0 h-full w-1/2 bg-white dark:bg-black dark:text-white z-50 transform -translate-x-full transition-transform duration-300 peer-checked/menu:translate-x-0 flex flex-col font-medium uppercase">
+        <div className="px-10 pt-10 fixed top-0 left-0 h-full w-1/2 bg-white dark:bg-black dark:text-white z-50 transform -translate-x-full transition-transform duration-300 peer-checked/menu:translate-x-0 flex flex-col font-medium uppercase overflow-y-auto">
           <label className="self-end mb-2 hover:scale-110" htmlFor="menu">
             <FontAwesomeIcon className="text-2xl" icon={faXmark} />
           </label>
@@ -58,7 +60,7 @@ export default function Navigation() {
             placeholder="Search for products"
           />
           <Link
-            to="/product"
+            to="/product-category"
             className="w-full text-left py-4 hover:bg-gray-100 dark:hover:bg-gray-800"
           >
             Product
@@ -118,7 +120,7 @@ export default function Navigation() {
               id="bottom-dropdown"
             />
             <div className=" w-full text-left py-4 flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800">
-              <Link to="/product-category/top" className="flex-1">
+              <Link to="/product-category/bottom" className="flex-1">
                 Bottom
               </Link>
               <label
@@ -133,19 +135,19 @@ export default function Navigation() {
             </div>
             <div className="hidden peer-checked/bottom-dropdown:flex flex-col">
               <Link
-                to="/product-category/top/long-pants"
+                to="/product-category/bottom/long-pants"
                 className="w-full text-left py-2 pl-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
               >
                 Long pants
               </Link>
               <Link
-                to="/product-category/top/short-pants"
+                to="/product-category/bottom/short-pants"
                 className="w-full text-left py-2 pl-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
               >
                 Short pants
               </Link>
               <Link
-                to="/product-category/top/skirts"
+                to="/product-category/bottom/skirts"
                 className="w-full text-left py-2 pl-4 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
               >
                 Skirts
@@ -385,7 +387,9 @@ export default function Navigation() {
             <FontAwesomeIcon className="text-2xl" icon={faCartShopping} />
             {cart?.items?.length > 0 && (
               <span className="absolute -top-1 -right-1 bg-rose-600 text-white size-4 rounded-full text-center text-xs">
-                {cart?.items?.length}
+                {cart?.items?.reduce((total, item) => {
+                  return total + (item?.quantity || 0);
+                }, 0)}
               </span>
             )}
           </label>

@@ -218,7 +218,9 @@ export default function SideCart() {
       </div>
       <em className="self-end text-sm">
         Quantity:
-        {cart?.items?.length || 0}
+        {cart?.items?.reduce((total, item) => {
+          return total + (item?.quantity || 0);
+        }, 0)}
       </em>
       <hr />
       <Link

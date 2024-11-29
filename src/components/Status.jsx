@@ -47,7 +47,7 @@ export default function Status({ status }) {
       color = "text-green-600";
       break;
     case "FAIL":
-    case "CANCEL":
+    case "CANCELLED":
       icon = <FontAwesomeIcon icon={faXmark} />;
       bg = "bg-red-100";
       color = "text-red-600";

@@ -45,7 +45,7 @@ export default function AppContextProvider({ children }) {
       { name: "Socks", path: "socks" },
       { name: "Bags", path: "bags" },
     ],
-  });    
+  });      
   const fetchUser = () => {
     fetch(`${process.env.REACT_APP_BE_ORIGIN}/users/profile`, {
       method: "GET",

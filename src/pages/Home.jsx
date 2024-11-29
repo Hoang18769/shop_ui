@@ -856,7 +856,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
       <div className="flex flex-col gap-2">
         <div className="flex justify-between">
           <h2 className="font-bold text-4xl">New Arrivals</h2>
-          <Link to="/product" className="hover:underline">
+          <Link to="/product/category" className="hover:underline">
             View all
           </Link>
         </div>
@@ -875,7 +875,7 @@ Note: Bảng size ở ảnh cuối mỗi mẫu hoặc ở mục Bảng quy đổ
       <div className="flex flex-col gap-2">
         <div className="flex justify-between">
           <h2 className="font-bold text-4xl">Best Sellers</h2>
-          <Link to="/product" className="hover:underline">
+          <Link to="/product-category" className="hover:underline">
             View all
           </Link>
         </div>
