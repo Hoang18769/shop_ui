@@ -100,7 +100,7 @@ export default function Category() {
   }, [sizes]);
   useEffect(() => {
     debouncedFetchCategory(() => {
-      if(name) changeSearchQuery("name", name);
+      if(name != null) changeSearchQuery("name", name);
     });
   }, [name]);
   const fetchFilterColorsAndSizes = () => {

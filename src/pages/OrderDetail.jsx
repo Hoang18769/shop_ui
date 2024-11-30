@@ -54,7 +54,7 @@ export default function OrderDetails() {
     document.title = `Order ${id}`;
   }, [id, token]);
 
-  const handlePaymentAgain = useCallback(() => {
+  const handlePayAgain = useCallback(() => {
     fetch(`${process.env.REACT_APP_BE_ORIGIN}/orders/pay-again/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -91,7 +91,7 @@ export default function OrderDetails() {
           reverseButtons: true,
         }).then((result) => {
           if (result.isConfirmed) {
-            const url = handlePaymentAgain();
+            const url = handlePayAgain();
           } else if (result.dismiss === Swal.DismissReason.cancel) {
             Swal.fire({
               title: ":<",

@@ -26,15 +26,10 @@ export default function Status({ status }) {
       bg = "bg-yellow-100";
       color = "text-yellow-500";
       break;
-    case "PAID":
-      icon = <FontAwesomeIcon icon={faMoneyCheck} />;
-      bg = "bg-violet-100";
-      color = "text-violet-500";
-      break;
     case "PACKING":
       icon = <FontAwesomeIcon icon={faBoxesPacking} />;
-      bg = "bg-yellow-100";
-      color = "text-yellow-500";
+      bg = "bg-violet-100";
+      color = "text-violet-500";
       break;
     case "DELIVERY":
       icon = <FontAwesomeIcon icon={faTruckFast} />;
@@ -46,8 +41,9 @@ export default function Status({ status }) {
       bg = "bg-green-100";
       color = "text-green-600";
       break;
-    case "FAIL":
+    case "FAILED":
     case "CANCELLED":
+    case "REJECTED":
       icon = <FontAwesomeIcon icon={faXmark} />;
       bg = "bg-red-100";
       color = "text-red-600";
