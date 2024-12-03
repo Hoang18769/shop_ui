@@ -29,22 +29,37 @@ export default function OrderDetails() {
   };
 
   const handleCancel = () => {
-    fetch(`${process.env.REACT_APP_BE_ORIGIN}/orders/cancel/${id}`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.code === 200) {
-          setOrder((prev) => ({ ...prev, status: "CANCELLED" }));
-          toast.success("Cancel success");
-        } else {
-          toast.error(data.message);
-        }
-      })
-      .catch((e) => toast.error(e.message));
+    Swal.fire({
+      icon: "warning",
+      title: "Are you sure you want to cancel this order?",
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonColor: "red",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`${process.env.REACT_APP_BE_ORIGIN}/orders/cancel/${id}`, {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.code === 200) {
+              setOrders((prevOrders) => {
+                const updatedOrders = prevOrders.map((order) =>
+                  order.id === id ? { ...order, status: "CANCELLED" } : order
+                );
+                return updatedOrders;
+              });
+              toast.success("Cancel succes");
+            } else {
+              toast.error(data.message);
+            }
+          })
+          .catch((e) => toast.error(e.message));
+      }
+    });
   };
 
   useEffect(() => {
