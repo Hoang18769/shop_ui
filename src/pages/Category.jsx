@@ -31,9 +31,7 @@ export default function Category() {
   const { category } = useContext(AppContext);
   const [products, setProducts] = useState([]);
   const [filterColors, setFilterColors] = useState([]);
-  const [selectedSize, setSelectedSize] = useState(
-    query.get("pageSize") * 1 || 12
-  );
+  const [selectedSize, setSelectedSize] = useState(query.get("size") * 1 || 12);
   const [selectedCol, setSelectedCol] = useState(2);
   const [selectedOption, setSelectedOption] = useState("1");
   const [filterSizes, setFilterSizes] = useState([]);
@@ -62,9 +60,13 @@ export default function Category() {
 
   const fetchCategory = () => {
     setLoading(true);
+    let tempQuery = new URLSearchParams(query.toString());
+    if(page){
+      tempQuery.set("page", page - 1);
+    }
     let url = `${
       process.env.REACT_APP_BE_ORIGIN
-    }/products/search?${query.toString()}`;
+    }/products/search?${tempQuery.toString()}`;
 
     if (subtype) {
       url = url.concat(`&subtype=${subtype.replace("-", " ")}`);
@@ -100,7 +102,7 @@ export default function Category() {
   }, [sizes]);
   useEffect(() => {
     debouncedFetchCategory(() => {
-      if(name != null) changeSearchQuery("name", name);
+      if (name != null) changeSearchQuery("name", name);
     });
   }, [name]);
   const fetchFilterColorsAndSizes = () => {
@@ -126,6 +128,7 @@ export default function Category() {
       .catch((e) => toast.error(e.message))
       .finally(() => setLoading(false));
   };
+
   useEffect(() => {
     fetchFilterColorsAndSizes();
     fetchCategory();
@@ -148,6 +151,10 @@ export default function Category() {
     };
   }, []);
 
+  useEffect(() => {
+    changeSearchQuery("sort", selectedOption);
+  }, [selectedOption]);
+
   const handleColorsChange = (color) => {
     const updatedColors = colors.includes(color)
       ? colors.filter((c) => c !== color)
@@ -166,7 +173,7 @@ export default function Category() {
 
   const handleSelectedSizeChange = (size) => {
     setSelectedSize(size);
-    changeSearchQuery("pageSize", size);
+    changeSearchQuery("size", size);
   };
 
   let categoryContent;
@@ -257,17 +264,29 @@ export default function Category() {
                 }}
                 className="bg-transparent placeholder:text-gray-400 text-sm border border-gray-200 rounded pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-gray-400 hover:border-gray-400 shadow-sm focus:shadow-md appearance-none cursor-pointer text-black bg-white dark:text-white dark:bg-gray-600"
               >
-                <option className="dark:text-white dark:bg-gray-600" value="1">
-                  Latest
+                <option
+                  className="dark:text-white dark:bg-gray-600"
+                  value="name,asc"
+                >
+                  Name: A - Z
                 </option>
-                <option className="dark:text-white dark:bg-gray-600" value="2">
+                <option
+                  className="dark:text-white dark:bg-gray-600"
+                  value="name,desc"
+                >
+                  Name: Z - A
+                </option>
+                <option
+                  className="dark:text-white dark:bg-gray-600"
+                  value="price,asc"
+                >
                   Price: Low to High
                 </option>
-                <option className="dark:text-white dark:bg-gray-600" value="3">
+                <option
+                  className="dark:text-white dark:bg-gray-600"
+                  value="price,desc"
+                >
                   Price: High to Low
-                </option>
-                <option className="dark:text-white dark:bg-gray-600" value="4">
-                  Popularity
                 </option>
               </select>
               <svg
@@ -619,27 +638,27 @@ export default function Category() {
                 >
                   <option
                     className="dark:text-white dark:bg-gray-600"
-                    value="1"
+                    value="name,asc"
                   >
-                    Latest
+                    Name: A - Z
                   </option>
                   <option
                     className="dark:text-white dark:bg-gray-600"
-                    value="2"
+                    value="name,desc"
+                  >
+                    Name: Z - A
+                  </option>
+                  <option
+                    className="dark:text-white dark:bg-gray-600"
+                    value="price,asc"
                   >
                     Price: Low to High
                   </option>
                   <option
                     className="dark:text-white dark:bg-gray-600"
-                    value="3"
+                    value="price,desc"
                   >
                     Price: High to Low
-                  </option>
-                  <option
-                    className="dark:text-white dark:bg-gray-600"
-                    value="4"
-                  >
-                    Popularity
                   </option>
                 </select>
                 <svg

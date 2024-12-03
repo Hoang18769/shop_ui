@@ -122,11 +122,14 @@ export default function OrderDetails() {
     case "SUCCESS":
       message = `Your order has been successfully delivered! We hope you’re enjoying your new items. If there’s anything you need or any questions about your purchase, feel free to reach out. We look forward to serving you again soon and thank you for your continued support!`;
       break;
-    case "FAIL":
+    case "FAILED":
       message = `We encountered an issue while delivering your order. Our delivery team was unable to complete the delivery as planned. We sincerely apologize for the inconvenience. Please contact us so we can resolve the issue and arrange for a new delivery. Thank you for your understanding and patience!`;
       break;
-    case "SUCCESS":
+    case "CANCELLED":
       message = `We're sorry to inform you that your order has been canceled. If you have any questions regarding the cancellation or would like assistance with reordering, please don’t hesitate to contact us. We hope to serve you again in the future and thank you for considering our store.`;
+      break;
+    case "REJECTED":
+      message = `Unfortunately, your order has been rejected. This may be due to issues with payment, stock availability, or other unforeseen circumstances. We sincerely apologize for the inconvenience. Please contact us for more details or assistance with placing a new order. Thank you for your understanding.`;
       break;
   }
   return (

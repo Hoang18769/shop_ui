@@ -29,8 +29,12 @@ export default function Order() {
   };
 
   const fetchOrders = () => {
+    let tempQuery = new URLSearchParams(query.toString());
+    if (page) {
+      tempQuery.set("page", page - 1);
+    }
     fetch(
-      `${process.env.REACT_APP_BE_ORIGIN}/orders/history?${query.toString()}`,
+      `${process.env.REACT_APP_BE_ORIGIN}/orders/history?${tempQuery.toString()}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
