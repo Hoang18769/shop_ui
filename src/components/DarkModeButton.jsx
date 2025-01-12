@@ -34,7 +34,7 @@ export default function DarkModeButton() {
         className="focus:outline-none transition duration-500 ease-in-out mr-5"
       >
         <FontAwesomeIcon
-          className="text-2xl"
+          className="lg:text-2xl"
           icon={isDarkMode ? faSun : faMoon}
         />
       </button>

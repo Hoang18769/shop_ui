@@ -14,12 +14,12 @@ export default function Product({ product }) {
         <img
           src={product.img}
           alt={product.name}
-          className="group-hover:hidden aspect-[1/1] object-cover rounded-t-lg"
+          className="group-hover:hidden w-full aspect-[1/1] object-cover rounded-t-lg"
         />
         <img
           src={product.hoverImg}
           alt={product.name}
-          className="hidden group-hover:block aspect-[1/1] object-cover rounded-t-lg"
+          className="hidden group-hover:block w-full aspect-[1/1] object-cover rounded-t-lg"
         />
         <div className="absolute rounded-full group/cart top-4 right-5 size-14 items-center justify-center bg-gray-50 shadow hidden group-hover:flex text-gray-900">
           <FontAwesomeIcon
@@ -35,7 +35,7 @@ export default function Product({ product }) {
           currency: "VND",
         })}
       </div>
-      <div className="flex gap-2 m-4">
+      <div className="flex gap-2 m-4 flex-wrap">
         {product?.colors?.map((color, index) => (
           <div
             key={index}
@@ -45,7 +45,7 @@ export default function Product({ product }) {
           ></div>
         ))}
       </div>
-      <div className="flex gap-2 m-4">
+      <div className="flex gap-2 m-4 flex-wrap">
         {product?.sizes?.map((size, index) => (
           <div
             key={index}

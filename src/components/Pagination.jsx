@@ -139,7 +139,7 @@ const Pagination = ({ current, total, onChange }) => {
           min={1}
           max={total}
         />
-        <span className="text-base">in {total} page(s)</span>
+        <span className="hidden lg:block text-base">in {total} page(s)</span>
       </div>
     </nav>
   );

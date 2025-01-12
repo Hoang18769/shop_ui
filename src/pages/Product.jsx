@@ -74,6 +74,8 @@ export default function Product() {
           setVariants(data.body.variants);
           setImgs(data.body.imgs);
           document.title = data.body.product?.name;
+          console.log(data);
+          
         } else {
           toast.error(data.message);
         }

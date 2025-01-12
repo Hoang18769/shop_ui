@@ -4,15 +4,16 @@ import { toast } from "react-toastify";
 
 export default function Profile() {
   const { user, setUser, token } = useContext(AppContext);
-  const [firstname, setFirstname] = useState();
-  const [lastname, setLastname] = useState();
+  const [firstname, setFirstname] = useState(user?.firstname || "");
+  const [lastname, setLastname] = useState(user?.lastname || "");
 
   useEffect(() => {
     document.title = "Profile";
   }, []);
+
   useEffect(() => {
-    setFirstname(user?.firstname || "");
-    setLastname(user?.lastname || "");
+    setFirstname(user?.firstname ?? ""); 
+    setLastname(user?.lastname ?? "");
   }, [user]);
 
   const handleChange = (e) => {
@@ -50,7 +51,7 @@ export default function Profile() {
               id="firstname"
               type="text"
               placeholder="Firstname"
-              value={firstname}
+              value={firstname || ""}
               onChange={(e) => setFirstname(e.target.value)}
               required
             />
@@ -63,7 +64,7 @@ export default function Profile() {
               className="shadow border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline text-black bg-white dark:bg-gray-600 dark:text-white"
               id="lastname"
               type="text"
-              value={lastname}
+              value={lastname || ""}
               onChange={(e) => setLastname(e.target.value)}
               placeholder="Lastname"
               required

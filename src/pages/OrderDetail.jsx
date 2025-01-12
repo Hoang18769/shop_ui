@@ -46,7 +46,7 @@ export default function OrderDetails() {
           .then((response) => response.json())
           .then((data) => {
             if (data.code === 200) {
-              setOrders((prevOrders) => {
+              setOrder((prevOrders) => {
                 const updatedOrders = prevOrders.map((order) =>
                   order.id === id ? { ...order, status: "CANCELLED" } : order
                 );

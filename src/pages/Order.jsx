@@ -45,7 +45,7 @@ export default function Order() {
       .then((data) => {
         if (data.code === 200) {
           setOrders(data.body.content);
-          setTotalPage(data.body.totalPages);
+          setTotalPage(data.body.page.totalPages);
         } else {
           toast.error(data.message);
         }
@@ -137,7 +137,7 @@ export default function Order() {
       <div>
         <h2 className="font-bold text-2xl">Order History</h2>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between flex-col lg:flex-row">
         <div className="flex flex-col">
           <h3 className="uppercase text-lg font-semibold text-gray-500">
             from date
@@ -167,16 +167,16 @@ export default function Order() {
           className="px-5 py-2 font-semibold hover:bg-gray-300 self-end"
         />
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between flex-col lg:flex-row">
         <div className="flex flex-col">
           <h3 className="uppercase text-lg font-semibold text-gray-500">
             status
           </h3>
-          <div className="relative">
+          <div className="relative w-full">
             <select
               value={status || ""}
               onChange={(e) => changeSearchQuery("status", e.target.value)}
-              className="bg-transparent placeholder:text-gray-400 text-sm border border-gray-200 rounded pl-3 pr-8 py-2 focus:outline-none focus:border-gray-400 hover:border-gray-400 shadow-sm focus:shadow-md appearance-none cursor-pointer text-black bg-white dark:text-white dark:bg-gray-600"
+              className="bg-transparent placeholder:text-gray-400 text-sm border border-gray-200 rounded pl-3 pr-8 py-2 focus:outline-none focus:border-gray-400 hover:border-gray-400 shadow-sm focus:shadow-md appearance-none cursor-pointer text-black bg-white dark:text-white dark:bg-gray-600 w-full"
             >
               <option>ALL</option>
               <option>NEW</option>
@@ -234,7 +234,7 @@ export default function Order() {
                     </button>
                   )}
                   {order?.status === "NEW" &&
-                    order?.payment?.type == "VNPAY" &&
+                    order?.payment?.type === "VNPAY" &&
                     order?.payment?.payTime === null && (
                       <button
                         onClick={() => handlePayAgain(order?.id)}
@@ -317,7 +317,7 @@ export default function Order() {
                           </button>
                         )}
                         {order?.status === "NEW" &&
-                          order?.payment?.type == "VNPAY" &&
+                          order?.payment?.type === "VNPAY" &&
                           order?.payment?.payTime === null && (
                             <button
                               onClick={() => handlePayAgain(order?.id)}

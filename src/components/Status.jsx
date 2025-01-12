@@ -21,11 +21,6 @@ export default function Status({ status }) {
       bg = "bg-yellow-100";
       color = "text-yellow-500";
       break;
-    case "PENDING":
-      icon = <FontAwesomeIcon icon={faSpinner} />;
-      bg = "bg-yellow-100";
-      color = "text-yellow-500";
-      break;
     case "PACKING":
       icon = <FontAwesomeIcon icon={faBoxesPacking} />;
       bg = "bg-violet-100";

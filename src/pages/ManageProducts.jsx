@@ -2,10 +2,17 @@ import {
   faAngleDown,
   faBars,
   faCheck,
+  faPlus,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState, useEffect, useContext, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  useMemo,
+} from "react";
 import Pagination from "../components/Pagination";
 import Product from "../components/Product";
 import { Link, useParams, useSearchParams } from "react-router-dom";
@@ -19,7 +26,7 @@ const debouncedFetchCategory = debounce((callback) => {
   callback();
 }, 1000);
 
-export default function Category() {
+export default function ManageProducts() {
   const { type, subtype } = useParams();
   const [query, setQuery] = useSearchParams();
   const [page, setPage] = useState(parseInt(query.get("page")) || 1);
@@ -184,7 +191,7 @@ export default function Category() {
             {Object.keys(category).map((key) => (
               <Link
                 key={key}
-                to={`/product-category/${key}`}
+                to={`/admin/products/${key}`}
                 className="text-left text-lg relative after:content-[''] dark:after:bg-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-black after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
               >
                 {key}
@@ -201,7 +208,7 @@ export default function Category() {
             {category[type].map((item) => (
               <Link
                 key={item?.path}
-                to={`/product-category/${type}/${item?.path}`}
+                to={`/admin/products/${type}/${item?.path}`}
                 className="text-left text-lg relative after:content-[''] dark:after:bg-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-black after:scale-x-0 hover:after:scale-x-100 after:origin-left after:transition-transform after:duration-300"
               >
                 {item?.name}
@@ -224,13 +231,23 @@ export default function Category() {
             type="checkbox"
             id="category-menu"
           />
-          <label
-            htmlFor="category-menu"
-            className="h-7 pl-5 hover:text-gray-500 flex items-center"
-          >
-            Product catalog
-            <FontAwesomeIcon className="text-md ml-3" icon={faAngleDown} />
-          </label>
+          <div className="flex justify-between">
+            <label
+              htmlFor="category-menu"
+              className="h-7 pl-5 hover:text-gray-500 flex items-center"
+            >
+              Product catalog
+              <FontAwesomeIcon className="text-md ml-3" icon={faAngleDown} />
+            </label>
+            <Link
+              to="/admin/products/add"
+              className="self-end bg-black text-white py-2 px-5 rounded-md flex items-center justify-center gap-2"
+            >
+              <p>New</p>
+              <FontAwesomeIcon icon={faPlus} />
+            </Link>
+          </div>
+
           {/* Dropdown menu */}
           <div className="hidden flex-col gap-3 items-start pl-5 mt-3 peer-checked/category-menu:flex">
             {categoryContent}
@@ -238,15 +255,22 @@ export default function Category() {
         </div>
 
         {/* Desktop menu */}
-        <div className="hidden font-medium h-16 items-center uppercase lg:flex gap-10">
-          {categoryContent}
+        <div className="hidden font-medium h-16 items-center uppercase lg:flex justify-between gap-10">
+          <div>{categoryContent}</div>
+          <Link
+            to="/admin/products/add"
+            className="self-end bg-black text-white py-2 px-5 rounded-md flex items-center justify-center gap-2"
+          >
+            <p>New</p>
+            <FontAwesomeIcon icon={faPlus} />
+          </Link>
         </div>
       </nav>
 
-      <hr className="hr-full -ml-5" />
+      <hr className="hr-full" />
       <section className="my-4">
         <div className="lg:hidden flex flex-col gap-10">
-          <div className="flex justify-between mb-2">
+          <div className="flex justify-between">
             <input
               className="hidden peer/filter-menu"
               type="checkbox"

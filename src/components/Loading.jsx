@@ -8,7 +8,7 @@ export default function Loading() {
       >
         <svg
           aria-hidden="true"
-          class="w-32 h-32 text-gray-300 animate-spin dark:text-black fill-black dark:fill-white pointer-events-none"
+          className="w-32 h-32 text-gray-300 animate-spin dark:text-black fill-black dark:fill-white pointer-events-none"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"

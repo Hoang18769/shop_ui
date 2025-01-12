@@ -1,4 +1,4 @@
-import logo from "../assets/images/new-logo-nocturnal-ver3-blue.svg";
+import logo from "../../assets/images/new-logo-nocturnal-ver3-blue.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
@@ -11,11 +11,11 @@ import {
   faUser,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import Authentication from "./Login";
+import Authentication from "../../components/Login";
 import { Link, useNavigate } from "react-router-dom";
-import SideCart from "./SideCart";
-import DarkModeButton from "./DarkModeButton";
-import { AppContext } from "../components/AppContext";
+import SideCart from "../../components/SideCart";
+import DarkModeButton from "../../components/DarkModeButton";
+import { AppContext } from "../../components/AppContext";
 import { useContext, useState } from "react";
 
 export default function Navigation() {
@@ -35,7 +35,11 @@ export default function Navigation() {
           <FontAwesomeIcon className="text-2xl" icon={faBars} />
         </label>
         <Link to="/">
-          <img src={logo} alt="logo" className="h-10 hover:drop-shadow-xl" />
+          <img
+            src={logo}
+            alt="logo"
+            className="h-5 lg:h-10 hover:drop-shadow-xl"
+          />
         </Link>
         <span className="pr-5 relative">
           <DarkModeButton />
@@ -54,11 +58,21 @@ export default function Navigation() {
           <label className="self-end mb-2 hover:scale-110" htmlFor="menu">
             <FontAwesomeIcon className="text-2xl" icon={faXmark} />
           </label>
-          <input
-            className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            type="search"
-            placeholder="Search for products"
-          />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              navigate(`/product-category/?name=${name}`);
+            }}
+          >
+            <input
+              className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              type="search"
+              placeholder="Search for products"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </form>
+
           <Link
             to="/product-category"
             className="w-full text-left py-4 hover:bg-gray-100 dark:hover:bg-gray-800"

@@ -1,9 +1,11 @@
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AppContext } from "./AppContext";
+import { jwtDecode } from "jwt-decode";
+
 export default function Login() {
   useEffect(() => {
     document.title = "Login";
@@ -11,6 +13,7 @@ export default function Login() {
   const { setToken } = useContext(AppContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   // Email validation function
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -54,6 +57,12 @@ export default function Login() {
         if (data.code === 200) {
           toast.success("Login successful!");
           setToken(data.body.accessToken);
+          const decodedToken = jwtDecode(data.body.accessToken);          
+          if (decodedToken.scope === "ADMIN") {
+            navigate("/admin");
+          } else {
+            navigate("/");
+          }
         } else if (data.code === 104) {
           toast.error(
             `Login failed! You have ${data.body.remainingTry} attempts remaining.`
