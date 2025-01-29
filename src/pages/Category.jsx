@@ -5,7 +5,13 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState, useEffect, useContext, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  useMemo,
+} from "react";
 import Pagination from "../components/Pagination";
 import Product from "../components/Product";
 import { Link, useParams, useSearchParams } from "react-router-dom";
@@ -243,7 +249,7 @@ export default function Category() {
         </div>
       </nav>
 
-      <hr className="hr-full -ml-5" />
+      <hr className="w-full" />
       <section className="my-4">
         <div className="lg:hidden flex flex-col gap-10">
           <div className="flex justify-between mb-2">
@@ -350,7 +356,7 @@ export default function Category() {
                         >
                           <input
                             type="checkbox"
-                            className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
+                            className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-black dark:checked:bg-white dark:checked:border-white"
                             id={`check-${item?.name}`}
                             checked={colors.includes(item?.name)}
                             onChange={() => handleColorsChange(item?.name)}
@@ -386,7 +392,7 @@ export default function Category() {
                         >
                           <input
                             type="checkbox"
-                            className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
+                            className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-black dark:checked:bg-white dark:checked:border-white"
                             id={`check-${item?.name}`}
                             checked={sizes.includes(item?.name)}
                             onChange={() => handleSizesChange(item?.name)}
@@ -451,7 +457,7 @@ export default function Category() {
                     >
                       <input
                         type="checkbox"
-                        className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
+                        className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-black dark:checked:bg-white dark:checked:border-white"
                         id={`check-${item?.name}`}
                         checked={colors.includes(item?.name)}
                         onChange={() => handleColorsChange(item?.name)}
@@ -487,7 +493,7 @@ export default function Category() {
                     >
                       <input
                         type="checkbox"
-                        className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
+                        className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-black dark:checked:bg-white dark:checked:border-white"
                         id={`check-${item?.name}`}
                         checked={sizes.includes(item?.name)}
                         onChange={() => handleSizesChange(item?.name)}

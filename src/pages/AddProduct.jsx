@@ -50,8 +50,46 @@ export default function AddProduct() {
     }
   };
 
+  const validateInput = () => {
+    let isValid = true;
+    if (!form?.name) {
+      toast.warn("Please enter name of product!");
+      isValid = false;
+    }
+
+    if (form?.price < 0) {
+      toast.warn("Price must be greater than 0!");
+      isValid = false;
+    }
+
+    if (!form?.description) {
+      toast.warn("Please enter description of product!");
+      isValid = false;
+    }
+    if (!form?.name) {
+      toast.warn("Please enter path of product!");
+      isValid = false;
+    }
+
+    if (!form?.type) {
+      toast.warn("Please choose a type of product!");
+      isValid = false;
+    }
+
+    if (form?.image === null) {
+      toast.warn("Please upload an image of product!");
+      isValid = false;
+    }
+    if (form?.hoverImage === null) {
+      toast.warn("Please upload a hover image of product!");
+      isValid = false;
+    }
+    return isValid;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if(!validateInput()) return;
     const formData = new FormData();
     formData.append("name", form.name);
     formData.append("price", form.price);
@@ -179,7 +217,7 @@ export default function AddProduct() {
               name="path"
               value={form.path}
               onChange={handleChange}
-              placeholder="Ex: /pants-1"
+              placeholder="Ex: pants-1"
               className="w-full p-2 border rounded dark:bg-gray-600"
               required
             />

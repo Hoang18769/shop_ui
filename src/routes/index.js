@@ -14,10 +14,17 @@ import ManageColors from "../pages/ManageColors";
 import ManageSizes from "../pages/ManageSizes";
 import ManageProducts from "../pages/ManageProducts";
 import AddProduct from "../pages/AddProduct";
+import ManageProductDetail from "../pages/ManageProductDetail";
+import OAuth2LoginCallback from "../pages/OAuth2LoginCallback";
 export const routes = [
   {
     path: "/",
     component: Home,
+    layout: UserLayout,
+  },
+  {
+    path: "oauth2_callback",
+    component: OAuth2LoginCallback,
     layout: UserLayout,
   },
   {
@@ -83,6 +90,11 @@ export const routes = [
   {
     path: "/admin/products/:type",
     component: ManageProducts,
+    layout: AdminLayout,
+  },
+  {
+    path: "/admin/product/:path",
+    component: ManageProductDetail,
     layout: AdminLayout,
   },
   {

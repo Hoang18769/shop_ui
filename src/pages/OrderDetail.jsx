@@ -69,7 +69,7 @@ export default function OrderDetails() {
     document.title = `Order ${id}`;
   }, [id, token]);
 
-  const handlePayAgain = useCallback(() => {
+  const handlePayAgain = () => {
     fetch(`${process.env.REACT_APP_BE_ORIGIN}/orders/pay-again/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -78,13 +78,13 @@ export default function OrderDetails() {
       .then((response) => response.json())
       .then((data) => {
         if (data.code === 200) {
-          return data.body;
+          window.location.href = data?.body;
         } else {
           toast.error(data.message);
         }
       })
       .catch((e) => toast.error(e.message));
-  }, [token]);
+  };
 
   useEffect(() => {
     if (paymentReturn && token) {
@@ -106,7 +106,7 @@ export default function OrderDetails() {
           reverseButtons: true,
         }).then((result) => {
           if (result.isConfirmed) {
-            const url = handlePayAgain();
+            handlePayAgain();
           } else if (result.dismiss === Swal.DismissReason.cancel) {
             Swal.fire({
               title: ":<",

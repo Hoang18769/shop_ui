@@ -1,23 +1,21 @@
-import React, { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Navigation from "./Navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import DarkModeButton from "../../components/DarkModeButton";
 import { AppContext } from "../../components/AppContext";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
-import { Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function AdminLayout({ children }) {
   const { user } = useContext(AppContext);
-  if (!user || user?.role != "ADMIN") {
-    setTimeout(() => {
-      if (!user || user?.role != "ADMIN") {
-        return <Navigate to={"/"} />;
-      }
-    }, 1000);
-  }
-  return (
-    <div className="bg-gray-200 dark:bg-gray-900 dark:text-white w-full absolute">
+  return !user || user.role !== "ADMIN" ? (
+    <div className="">
+      <h1>You do not have access to this resource.</h1>
+      <Link to={"/"}>Back to home</Link>
+    </div>
+  ) : (
+    <div className="bg-gray-200 dark:bg-black dark:text-white w-full absolute">
       <div className="lg:flex lg:my-5 lg:mx-5 lg:rounded-2xl shadow-lg">
         <input
           type="checkbox"
@@ -29,7 +27,7 @@ export default function AdminLayout({ children }) {
           <Navigation />
         </div>
         <div className="w-full lg:w-5/6">
-          <div className="h-10 bg-white dark:bg-gray-500 dark:text-white flex items-center justify-between py-7 px-2 lg:rounded-tr-2xl">
+          <div className="h-10 bg-gray-50 dark:bg-gray-500 dark:text-white flex items-center justify-between py-7 px-2 lg:rounded-tr-2xl border-b-2 border-gray-200 dark:border-gray-700">
             <label htmlFor="admin-menu-checkbox" className="lg:hidden">
               <FontAwesomeIcon icon={faBars} />
             </label>
@@ -43,7 +41,7 @@ export default function AdminLayout({ children }) {
               <DarkModeButton />
             </div>
           </div>
-          <main className="bg-gray-200 dark:bg-gray-800 p-5 rounded-br-2xl">
+          <main className="bg-white dark:bg-gray-800 p-5 rounded-br-2xl">
             {children}
           </main>
         </div>

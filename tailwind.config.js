@@ -10,8 +10,8 @@ module.exports = {
     function ({ addUtilities }) {
       addUtilities({
         ".hr-full": {
-          width: "99vw", 
-          transform: "translateX(-5%)", // Đảm bảo hr canh giữa trên màn hình
+          width: "100%", 
+          transform: "translateX(-5%)",
         },
       });
     },

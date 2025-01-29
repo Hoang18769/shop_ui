@@ -14,7 +14,7 @@ import React, {
   useMemo,
 } from "react";
 import Pagination from "../components/Pagination";
-import Product from "../components/Product";
+import AdminProduct from "../components/AdminProduct";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { AppContext } from "../components/AppContext";
 import MultiRangeSlider from "../components/MultiRangeSlider";
@@ -39,7 +39,6 @@ export default function ManageProducts() {
   const [products, setProducts] = useState([]);
   const [filterColors, setFilterColors] = useState([]);
   const [selectedSize, setSelectedSize] = useState(query.get("size") * 1 || 12);
-  const [selectedCol, setSelectedCol] = useState(2);
   const [selectedOption, setSelectedOption] = useState("createdAt,desc");
   const [filterSizes, setFilterSizes] = useState([]);
   const [sizes, setSizes] = useState(
@@ -267,7 +266,7 @@ export default function ManageProducts() {
         </div>
       </nav>
 
-      <hr className="hr-full" />
+      <hr className="w-full" />
       <section className="my-4">
         <div className="lg:hidden flex flex-col gap-10">
           <div className="flex justify-between">
@@ -374,7 +373,7 @@ export default function ManageProducts() {
                         >
                           <input
                             type="checkbox"
-                            className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
+                            className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-black dark:checked:bg-white dark:checked:border-white"
                             id={`check-${item?.name}`}
                             checked={colors.includes(item?.name)}
                             onChange={() => handleColorsChange(item?.name)}
@@ -410,7 +409,7 @@ export default function ManageProducts() {
                         >
                           <input
                             type="checkbox"
-                            className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
+                            className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-black dark:checked:bg-white dark:checked:border-white"
                             id={`check-${item?.name}`}
                             checked={sizes.includes(item?.name)}
                             onChange={() => handleSizesChange(item?.name)}
@@ -435,9 +434,9 @@ export default function ManageProducts() {
               </div>
             </div>
           </div>
-          <div className={`ml-5 grid gap-3 sm:grid-cols-2 md:grid-cols-3`}>
+          <div className={`lg:mx-5 grid gap-3 sm:grid-cols-2 md:grid-cols-3`}>
             {products.map((product, index) => (
-              <Product key={index} product={product} />
+              <AdminProduct key={index} product={product} />
             ))}
           </div>
           <Pagination
@@ -475,7 +474,7 @@ export default function ManageProducts() {
                     >
                       <input
                         type="checkbox"
-                        className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
+                        className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-black dark:checked:bg-white dark:checked:border-white"
                         id={`check-${item?.name}`}
                         checked={colors.includes(item?.name)}
                         onChange={() => handleColorsChange(item?.name)}
@@ -511,7 +510,7 @@ export default function ManageProducts() {
                     >
                       <input
                         type="checkbox"
-                        className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-gray-900 dark:checked:bg-white dark:checked:border-white"
+                        className="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow dark:shadow-gray-100 hover:shadow-md border border-gray-300 checked:bg-gray-800 checked:border-gray-800 dark:bg-black dark:checked:bg-white dark:checked:border-white"
                         id={`check-${item?.name}`}
                         checked={sizes.includes(item?.name)}
                         onChange={() => handleSizesChange(item?.name)}
@@ -609,55 +608,6 @@ export default function ManageProducts() {
                   </label>
                 </div>
               </div>
-              <div className="flex">
-                Column:
-                <div className="ml-3 size-selector flex gap-2">
-                  <label className={selectedCol === 2 ? "font-bold" : ""}>
-                    <input
-                      type="radio"
-                      name="sizes"
-                      value="2"
-                      id="radio-2"
-                      className="hidden"
-                      onChange={(e) => {
-                        setSelectedCol(e.target.value * 1);
-                      }}
-                      checked={selectedCol === 2}
-                    />
-                    2
-                  </label>
-                  <span>/</span>
-                  <label className={selectedCol === 3 ? "font-bold" : ""}>
-                    <input
-                      type="radio"
-                      name="sizes"
-                      value="3"
-                      id="radio-3"
-                      className="hidden"
-                      onChange={(e) => {
-                        setSelectedCol(e.target.value * 1);
-                      }}
-                      checked={selectedCol === 3}
-                    />
-                    3
-                  </label>
-                  <span>/</span>{" "}
-                  <label className={selectedCol === 4 ? "font-bold" : ""}>
-                    <input
-                      type="radio"
-                      name="sizes"
-                      value="4"
-                      id="radio-4"
-                      className="hidden"
-                      onChange={(e) => {
-                        setSelectedCol(e.target.value * 1);
-                      }}
-                      checked={selectedCol === 4}
-                    />
-                    4
-                  </label>
-                </div>
-              </div>
               <div className="relative">
                 <select
                   value={selectedOption}
@@ -713,19 +663,9 @@ export default function ManageProducts() {
                 </svg>
               </div>
             </div>
-            <div
-              className={`ml-5 grid gap-5 ${
-                selectedCol === 2
-                  ? "grid-cols-2"
-                  : selectedCol === 3
-                  ? "grid-cols-3"
-                  : selectedCol === 4
-                  ? "grid-cols-4"
-                  : "grid-cols-1"
-              }`}
-            >
+            <div className="ml-5 grid gap-5">
               {products.map((product, index) => (
-                <Product key={index} product={product} />
+                <AdminProduct key={index} product={product} />
               ))}
             </div>
 

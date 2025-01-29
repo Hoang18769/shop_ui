@@ -1,13 +1,7 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { AppContext } from "./AppContext";
-import debounce from "lodash.debounce";
+import { debounce } from "lodash";
 import { faRotateRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { MAX_ITEM_QUANTITY } from "../constant";
@@ -169,7 +163,7 @@ export default function Cart() {
                         </button>
                         <input
                           type="text"
-                          className="w-8 text-center bg-white text-black dark:bg-gray-900 dark:text-white"
+                          className="w-8 text-center bg-white text-black dark:bg-black dark:text-white"
                           value={item?.quantity}
                           onChange={(e) =>
                             handleChangeQuantity(
@@ -299,7 +293,7 @@ export default function Cart() {
                       </button>
                       <input
                         type="text"
-                        className="w-10 text-center bg-white text-black dark:bg-gray-900 dark:text-white"
+                        className="w-10 text-center bg-white text-black dark:bg-black dark:text-white"
                         value={item?.quantity}
                         onChange={(e) =>
                           handleChangeQuantity(

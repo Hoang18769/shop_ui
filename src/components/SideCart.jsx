@@ -3,7 +3,7 @@ import { AppContext } from "./AppContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotateRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import debounce from "lodash.debounce";
+import { debounce } from "lodash";
 import { MAX_ITEM_QUANTITY } from "../constant";
 import { toast } from "react-toastify";
 
@@ -102,7 +102,7 @@ export default function SideCart() {
         </div>
       </div>
       <hr />
-      <div className="grid grid-cols-1 divide-y-2 h-2/5 overflow-y-auto">
+      <div className="grid grid-cols-1 divide-y-2 h-1/5 overflow-y-auto">
         {cart?.items?.map((item) => (
           <div key={item?.variant?.id} className="flex gap-4 relative py-2">
             <button
@@ -111,13 +111,20 @@ export default function SideCart() {
             >
               <FontAwesomeIcon icon={faXmark} />
             </button>
-            <div className="flex gap-4">
-              <img
-                src={item?.variant?.img}
-                alt={item?.product?.name}
-                className="w-24 object-contain"
-              />
-              <div className="max-w-[50%] lg:max-w-[80%] flex flex-col gap-2">
+            <div className="flex flex-col lg:flex-row gap-4">
+              <div className="flex gap-4">
+                <img
+                  src={item?.variant?.img}
+                  alt={item?.product?.name}
+                  className="w-24 object-contain"
+                />
+                <div>
+                  <div className="lg:hidden rounded-full bg-gray-100 px-2 dark:bg-gray-800">
+                    {item?.variant?.quantity} product(s) left
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
                 <Link
                   to={`/product/${item?.product?.path}/?color=${item?.variant?.color?.name}&size=${item?.variant?.size?.name}&quantity=${item?.quantity}`}
                   className="font-semibold"
@@ -131,7 +138,7 @@ export default function SideCart() {
                   </span>
                   <span> - {item?.variant?.size?.name}</span>
                 </Link>
-                <div className="rounded-full bg-gray-100 px-2 dark:bg-gray-800">
+                <div className="hidden lg:block rounded-full bg-gray-100 px-2 dark:bg-gray-800">
                   {item?.variant?.quantity} product(s) left
                 </div>
                 <div>
@@ -161,7 +168,7 @@ export default function SideCart() {
                       </button>
                       <input
                         type="text"
-                        className="w-8 text-center bg-white text-black dark:bg-gray-900 dark:text-white"
+                        className="w-8 text-center bg-white text-black dark:bg-black dark:text-white"
                         value={item?.quantity}
                         onChange={(e) =>
                           handleChangeQuantity(
@@ -204,7 +211,7 @@ export default function SideCart() {
         ))}
       </div>
       <hr />
-      <div className="flex gap-2 text-2xl self-end">
+      <div className="flex gap-2 lg:text-2xl self-end">
         <p>
           Subtotal:
           {cart?.items
@@ -233,7 +240,7 @@ export default function SideCart() {
         to="/checkout"
         className="w-full text-center py-2 bg-black text-white dark:text-black dark:bg-white hover:opacity-50"
       >
-        PAYMENT
+        CHECKOUT
       </Link>
     </div>
   );

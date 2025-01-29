@@ -31,10 +31,10 @@ export default function DarkModeButton() {
       <button
         id="theme-toggle"
         onClick={toggleDarkMode}
-        className="focus:outline-none transition duration-500 ease-in-out mr-5"
+        className="focus:outline-none transition duration-500 ease-in-out"
       >
         <FontAwesomeIcon
-          className="lg:text-2xl"
+        className="text-xl"
           icon={isDarkMode ? faSun : faMoon}
         />
       </button>

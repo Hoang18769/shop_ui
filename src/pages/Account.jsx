@@ -141,14 +141,14 @@ export default function Account() {
     return (
       <div className="flex flex-col gap-4">
         <h2 className="text-2xl font-bold">ACCOUNT</h2>
-        <hr className="hr-full" />
+        <hr className="w-full" />
         <div className="flex flex-col lg:flex-row">
           <nav className="lg:w-1/6 flex flex-col lg:border-r-2">
             <button
               onClick={() => changeTab("profile")}
               className={`text-left py-2 pl-4 mr-2 ${
                 tab === "profile" ? "font-bold text-lg" : "font-semibold"
-              } bg-white dark:bg-gray-900 hover:bg-gray-300 dark:hover:bg-gray-800`}
+              } bg-white dark:bg-black hover:bg-gray-300 dark:hover:bg-gray-800`}
             >
               Profile
             </button>
@@ -158,7 +158,7 @@ export default function Account() {
                 tab === "change-password"
                   ? "font-bold text-lg"
                   : "font-semibold"
-              } bg-white dark:bg-gray-900 hover:bg-gray-300 dark:hover:bg-gray-800`}
+              } bg-white dark:bg-black hover:bg-gray-300 dark:hover:bg-gray-800`}
             >
               Change password
             </button>
@@ -166,7 +166,7 @@ export default function Account() {
               onClick={() => changeTab("cart")}
               className={`text-left ${
                 tab === "cart" ? "font-bold text-lg" : "font-semibold"
-              } py-2 pl-4 mr-2 bg-white dark:bg-gray-900 hover:bg-gray-300 dark:hover:bg-gray-800`}
+              } py-2 pl-4 mr-2 bg-white dark:bg-black hover:bg-gray-300 dark:hover:bg-gray-800`}
             >
               Cart
             </button>
@@ -174,7 +174,7 @@ export default function Account() {
               onClick={() => changeTab("order")}
               className={`text-left ${
                 tab === "order" ? "font-bold text-lg" : "font-semibold"
-              } py-2 pl-4 mr-2 bg-white dark:bg-gray-900 hover:bg-gray-300 dark:hover:bg-gray-800`}
+              } py-2 pl-4 mr-2 bg-white dark:bg-black hover:bg-gray-300 dark:hover:bg-gray-800`}
             >
               Order
             </button>
@@ -182,12 +182,12 @@ export default function Account() {
               onClick={() => changeTab("logout")}
               className={`text-left ${
                 tab === "logout" ? "font-bold text-lg" : "font-semibold"
-              } py-2 pl-4 mr-2 bg-white dark:bg-gray-900 hover:bg-gray-300 dark:hover:bg-gray-800`}
+              } py-2 pl-4 mr-2 bg-white dark:bg-black hover:bg-gray-300 dark:hover:bg-gray-800`}
             >
               Logout
             </button>
           </nav>
-          <hr className="hr-full lg:hidden" />
+          <hr className="w-full lg:hidden" />
           <div className="lg:w-5/6 m-4">{content}</div>
         </div>
       </div>

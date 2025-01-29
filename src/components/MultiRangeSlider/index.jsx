@@ -113,8 +113,8 @@ const MultiRangeSlider = ({ curMin, curMax, onMinChange, onMaxChange }) => {
       <div className="slider">
         <div className="slider__track" />
         <div ref={range} className="slider__range" />
-        <div className="slider__left-value">{minVal}</div>
-        <div className="slider__right-value">{maxVal}</div>
+        <div className="slider__left-value dark:text-white">{minVal}</div>
+        <div className="slider__right-value dark:text-white">{maxVal}</div>
       </div>
     </div>
   );

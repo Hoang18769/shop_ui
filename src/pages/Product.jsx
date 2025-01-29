@@ -25,7 +25,7 @@ export default function Product() {
   const [mirrorPosition, setMirrorPosition] = useState({ x: 0, y: 0 });
   const [showMirror, setShowMirror] = useState(false);
   const [index, setIndex] = useState(0);
-  const imgRef = useRef();  
+  const imgRef = useRef();
   const variant =
     selectedColor && selectedSize
       ? variants?.find(
@@ -75,7 +75,6 @@ export default function Product() {
           setImgs(data.body.imgs);
           document.title = data.body.product?.name;
           console.log(data);
-          
         } else {
           toast.error(data.message);
         }
@@ -115,11 +114,6 @@ export default function Product() {
       .then((response) => response.json())
       .then((data) => {
         if (data.code === 200) {
-          let newItem = {
-            quantity: selectedQuantity,
-            product: product,
-            variant: variant,
-          };
           toast.success("Add to cart success");
         } else {
           toast.error(data.message);
@@ -261,7 +255,7 @@ export default function Product() {
               </button>
               <input
                 type="text"
-                className="w-10 text-center bg-white text-black dark:bg-gray-900 dark:text-white"
+                className="w-10 text-center bg-white text-black dark:bg-black dark:text-white"
                 value={selectedQuantity}
                 onChange={(e) => updateQuantity(parseInt(e.target.value) || 1)}
               />

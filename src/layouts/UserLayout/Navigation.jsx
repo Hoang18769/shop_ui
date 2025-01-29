@@ -7,7 +7,6 @@ import {
   faCartShopping,
   faMagnifyingGlass,
   faRightFromBracket,
-  faShirt,
   faUser,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -23,7 +22,7 @@ export default function Navigation() {
   const [name, setName] = useState("");
   const navigate = useNavigate();
   return (
-    <nav className="z-50 border-y-2 border-y-black bg-white dark:bg-gray-900 dark:text-white dark:border-y-white">
+    <nav className="z-50 border-y-2 border-y-black bg-white dark:bg-black dark:text-white dark:border-y-white">
       <input className="hidden peer/cart" type="checkbox" id="cart" />
       <input className="hidden peer/search" type="checkbox" id="search" />
       <div
@@ -42,7 +41,9 @@ export default function Navigation() {
           />
         </Link>
         <span className="pr-5 relative">
-          <DarkModeButton />
+          <span className="mr-2">
+            <DarkModeButton />
+          </span>
           <label htmlFor="cart">
             <FontAwesomeIcon className="text-2xl" icon={faCartShopping} />
             {cart?.items?.length > 0 && (
@@ -393,7 +394,9 @@ export default function Navigation() {
         )}
 
         <div className="flex gap-5">
-          <DarkModeButton />
+          <span>
+            <DarkModeButton />
+          </span>
           <label htmlFor="search">
             <FontAwesomeIcon className="text-2xl" icon={faMagnifyingGlass} />
           </label>
@@ -409,7 +412,7 @@ export default function Navigation() {
           </label>
         </div>
       </div>
-      <div className="px-10 pt-10 fixed top-0 right-0 h-full w-1/2 bg-white dark:bg-black dark:text-white z-50 transform translate-x-full transition-transform duration-300 peer-checked/cart:translate-x-0 flex flex-col gap-4 font-medium peer-checked/cart:shadow-xl peer-checked/cart:dark:shadow-gray-700">
+      <div className="px-10 pt-10 fixed top-0 right-0 h-full w-full lg:w-1/2 bg-white dark:bg-black dark:text-white z-50 transform translate-x-full transition-transform duration-300 peer-checked/cart:translate-x-0 flex flex-col gap-4 font-medium peer-checked/cart:shadow-xl peer-checked/cart:dark:shadow-gray-700">
         <SideCart />
       </div>
       <div className="px-10 pt-10 fixed top-0 right-0 h-full w-1/2 bg-white dark:bg-black dark:text-white z-50 transform translate-x-full transition-transform duration-300 peer-checked/search:translate-x-0 flex flex-col gap-4 font-medium peer-checked/search:shadow-xl peer-checked/search:dark:shadow-gray-700">
