@@ -7,7 +7,6 @@ export default function AppContextProvider({ children }) {
   const [cart, setCart] = useState();
   const [token, setToken] = useState();
   const [loggedIn, setLoggedIn] = useState(false);
-  const [refreshResult, setRefreshResult] = useState(true);
   const [category, setCategory] = useState({
     top: [
       {
@@ -83,8 +82,6 @@ export default function AppContextProvider({ children }) {
   };
 
   const refreshToken = async () => {
-    if (!refreshResult) return;
-
     fetch(`${process.env.REACT_APP_BE_ORIGIN}/auth/refresh`, {
       method: "POST",
       headers: {
@@ -94,29 +91,20 @@ export default function AppContextProvider({ children }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.code === 200) {
-          console.log(data);
-          
+        if (data.code === 200 && data.body.accessToken) {          
           setToken(data.body.accessToken);
-          setRefreshResult(true);
         } else {
           if (token) {
             setToken(null);
             setLoggedIn(false);
             toast.error("You need login again!");
-            setRefreshResult(false);
           }
         }
-      })
-      .catch(() => {
-        setRefreshResult(false);
-      });
+      }).catch(() => console.log("lỗi"));
   };
 
-  useEffect(() => {
-    console.log("get info ...");
-    
-    if (token && refreshResult) {
+  useEffect(() => {    
+    if (token) {
       setLoggedIn(true);
       fetchUser();
       fetchCart();
@@ -130,7 +118,7 @@ export default function AppContextProvider({ children }) {
       setCart(null);
       refreshToken();
     }
-  }, [token, refreshResult]);
+  }, [token]);
   
   return (
     <AppContext.Provider
