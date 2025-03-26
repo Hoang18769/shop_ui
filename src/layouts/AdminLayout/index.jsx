@@ -9,6 +9,9 @@ import { Link } from "react-router-dom";
 
 export default function AdminLayout({ children }) {
   const { user } = useContext(AppContext);
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
   return !user || user.role !== "ADMIN" ? (
     <div className="">
       <h1>You do not have access to this resource.</h1>
