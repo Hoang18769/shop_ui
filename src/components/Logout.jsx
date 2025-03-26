@@ -9,7 +9,7 @@ export default function Logout() {
   const handleLogout = () => {
     if (token) {
       fetch(`${process.env.REACT_APP_BE_ORIGIN}/auth/logout`, {
-        method: "POST",
+        method: "DELETE",
         credentials: "include",
       })
         .then(() => {
