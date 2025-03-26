@@ -128,6 +128,8 @@ export default function AppContextProvider({ children }) {
     }
   }, [token, refreshResult]);
   
+  useEffect(()=> {console.log(user);
+  }, [user]);
   return (
     <AppContext.Provider
       value={{
