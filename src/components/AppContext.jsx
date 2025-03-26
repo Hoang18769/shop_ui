@@ -95,6 +95,8 @@ export default function AppContextProvider({ children }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.code === 200) {
+          console.log(data);
+          
           setToken(data.body.accessToken);
           setRefreshResult(true);
         } else {
@@ -112,6 +114,8 @@ export default function AppContextProvider({ children }) {
   };
 
   useEffect(() => {
+    console.log("get info ...");
+    
     if (token && refreshResult) {
       setLoggedIn(true);
       fetchUser();
@@ -128,8 +132,6 @@ export default function AppContextProvider({ children }) {
     }
   }, [token, refreshResult]);
   
-  useEffect(()=> {console.log(user);
-  }, [user]);
   return (
     <AppContext.Provider
       value={{
