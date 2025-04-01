@@ -126,7 +126,7 @@ export default function Register() {
           setToken(data.body.accessToken);
           navigate("/account/?tab=profile");
         } else {
-          // toast.error(data.message);
+          toast.error(data.message);
         }
       })
       .catch((e) => toast.error(e.message));
