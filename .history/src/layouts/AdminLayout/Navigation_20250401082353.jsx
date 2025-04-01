@@ -7,7 +7,6 @@ import {
   faRainbow,
   faHashtag,
   faList,
-  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -74,13 +73,7 @@ export default function Navigation() {
           <FontAwesomeIcon className="w-5" icon={faReceipt} />
           <span>Orders</span>
         </Link>
-        <Link
-          to="/account/?tab=logout"
-          className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-700"
-        >
-          <FontAwesomeIcon className="w-5" icon={faRightFromBracket} />
-          <span>Log out</span>
-        </Link>
+        
       </div>
     </nav>
   );

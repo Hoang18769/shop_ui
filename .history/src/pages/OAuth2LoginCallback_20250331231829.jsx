@@ -22,6 +22,6 @@ export default function OAuth2LoginCallback() {
     }
   } else if (query?.get("status") === "fail") {
     toast.error("Login via OAuth2 failed!");
-    return <Navigate to="/account/?tab=login" />;
+    return <Navigate to="/login" />;
   } else return <div>Processing...</div>;
 }
