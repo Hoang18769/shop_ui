@@ -1,24 +1,23 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Line, Doughnut } from "react-chartjs-2";
 import {
-  Chart as ChartJS,
-  LineElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  ArcElement,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import {
-  faArrowTrendDown,
   faArrowTrendUp,
   faBagShopping,
-  faUser,
+  faUser
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AppContext } from "../components/AppContext";
+import {
+  ArcElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Tooltip,
+} from "chart.js";
+import React, { useContext, useEffect, useState } from "react";
+import { Doughnut, Line } from "react-chartjs-2";
 import { useSearchParams } from "react-router-dom";
+import { AppContext } from "../components/AppContext";
 
 // Đăng ký các thành phần cho Chart.js
 ChartJS.register(
@@ -41,6 +40,8 @@ function getRandomColor() {
 
 export default function Dashboard() {
   const { token } = useContext(AppContext);
+  const [orderCountSummary, setOrderCountSummary] = useState();
+  const [userCountSummary, setUserCountSummary] = useState();
   const [summaryData, setSummaryData] = useState();
   const [categorySummaryData, setCategorySummaryData] = useState();
   const [query, setQuery] = useSearchParams();
@@ -95,8 +96,7 @@ export default function Dashboard() {
 
   const fetchSummary = () => {
     fetch(
-      `${
-        process.env.REACT_APP_BE_ORIGIN
+      `${process.env.REACT_APP_BE_ORIGIN
       }/admin/orders/summary?${query.toString()}`,
       {
         headers: {
@@ -175,10 +175,70 @@ export default function Dashboard() {
       });
   };
 
+  const fetchOrderCountSummary = () => {
+    fetch(
+      `${process.env.REACT_APP_BE_ORIGIN
+      }/admin/orders/order-count-summary`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.code === 200) {
+          setOrderCountSummary(data.body);
+        } else {
+          console.error("API returned an error:", data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching summary:", error);
+      });
+  };
+
+  const fetchUserCountSummary = () => {
+    fetch(
+      `${process.env.REACT_APP_BE_ORIGIN
+      }/admin/users/summary`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.code === 200) {
+          setUserCountSummary(data.body);
+        } else {
+          console.error("API returned an error:", data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching summary:", error);
+      });
+  };
+
   useEffect(() => {
     if (token) {
       fetchSummary();
       fetchCategorySummary();
+      fetchOrderCountSummary();
+      fetchUserCountSummary();
     }
   }, [query, token]);
 
@@ -192,17 +252,17 @@ export default function Dashboard() {
             </div>
             <div className="flex-1">
               <h2 className="font-semibold">Total Sales</h2>
-              <p className="text-sm">757 Orders</p>
+              <p className="text-sm">${orderCountSummary?.orderCount} Orders</p>
             </div>
           </div>
-          <h2 className="font-semibold text-lg">12123vnđ</h2>
+          <h2 className="font-semibold text-lg">${orderCountSummary?.totalAmount.toLocaleString()} vnđ</h2>
           <div className="flex justify-between">
             <div className="flex gap-1 items-center">
-              <FontAwesomeIcon icon={faArrowTrendDown} />
-              <p>-15.5%</p>
+              <FontAwesomeIcon icon={faArrowTrendUp} />
+              <p>{orderCountSummary?.orderCount - orderCountSummary?.thisWeekOrderCount === 0 ? 100 : (orderCountSummary?.orderCount * 100 / (orderCountSummary?.orderCount - orderCountSummary?.thisWeekOrderCount)) - 100} %</p>
             </div>
             <div className="flex gap-1 items-center">
-              <p>+154 this week</p>
+              <p>+ {orderCountSummary?.thisWeekOrderCount} this week</p>
             </div>
           </div>
         </div>
@@ -215,14 +275,14 @@ export default function Dashboard() {
               <h2 className="font-semibold">Users</h2>
             </div>
           </div>
-          <h2 className="font-semibold text-lg">1234 users</h2>
+          <h2 className="font-semibold text-lg">{userCountSummary?.userCount} users</h2>
           <div className="flex justify-between">
             <div className="flex gap-1 items-center">
               <FontAwesomeIcon icon={faArrowTrendUp} />
-              <p>+11.5%</p>
+              <p>{userCountSummary?.userCount - userCountSummary?.thisWeekUserCount === 0 ? 100 : (userCountSummary?.userCount * 100 / (userCountSummary?.userCount - userCountSummary?.thisWeekUserCount)) - 100} %</p>
             </div>
             <div className="flex gap-1 items-center">
-              <p>+154 this week</p>
+              <p>+ {userCountSummary?.thisWeekUserCount} this week</p>
             </div>
           </div>
         </div>
